@@ -1,11 +1,13 @@
 package com.webhopper;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.webhopper.poloniex.PairQuote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.print.attribute.HashAttributeSet;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -55,74 +57,80 @@ public class StructureTriangles {
         final List<Triangle> result = new LinkedList<>();
         final Set<String> trianglesAlreadyFound = new HashSet<>();
         final String prices = getPrices();
-
-        JsonObject tradableCoins = filterTradableCoins(prices);
-        for(String pairA : tradableCoins.keySet()) {
-            JsonObject pairAInfo = tradableCoins.get(pairA).getAsJsonObject();
-            String[] split = pairA.split("_");
-            String aBase = split[0];
-            String aQuote = split[1];
-
-            for(String pairB : tradableCoins.keySet()) {
-                if(pairA.equals(pairB)) {
+        ObjectNode tradableCoins = filterTradableCoins(prices);
+        List<PairQuote> pairQuotes = mapPoloniexJsonToPairQuotes(tradableCoins);
+        
+        for(PairQuote pairA : pairQuotes) {
+            final String baseA = pairA.getBase();
+            final String quoteA = pairA.getQuote();
+            for(PairQuote pairB : pairQuotes) {
+                if (pairA.equals(pairB)) {
                     // skip bcs pairA should != pairB
                     continue;
                 }
+                final String baseB = pairB.getBase();
+                final String quoteB = pairB.getQuote();
 
-                String[] splitPairB = pairB.split("_");
-                String bBase = splitPairB[0];
-                String bQuote = splitPairB[1];
-
-                if(aPairNotTradableForBPair(aBase, aQuote, bBase, bQuote)) {
+                if (aPairNotTradableForBPair(baseA, quoteA, baseB, quoteB)) {
                     continue;
                 }
-
-                final Set<String> coinsToCompleteTriangle = findCoinsNeededToCompleteTriangle(aBase, aQuote, bBase, bQuote);
-                for(String pairC : tradableCoins.keySet()) {
-                    if(pairC.equals(pairA) || pairC.equals(pairB)){
+                final Set<String> coinsToCompleteTriangle = findCoinsNeededToCompleteTriangle(baseA, quoteA, baseB, quoteB);
+                for(PairQuote pairC : pairQuotes) {
+                    if (pairC.equals(pairA) || pairC.equals(pairB)) {
                         continue;
                     }
 
-                    final String[] splitPairC = pairC.split("_");
-                    String cBase = splitPairC[0];
-                    String cQuote = splitPairC[1];
+                    final String baseC = pairC.getBase();
+                    final String quoteC = pairC.getQuote();
 
                     // pairC must contain both coins to complete triangle.
-                    if(!coinsToCompleteTriangle.contains(cBase) || !coinsToCompleteTriangle.contains(cQuote)) {
+                    if (!coinsToCompleteTriangle.contains(baseC) || !coinsToCompleteTriangle.contains(quoteC)) {
                         continue;
                     }
 
-                    List<String> combineAll = Arrays.asList(new String[]{pairA, pairB, pairC});
+                    List<String> combineAll = Arrays.asList(new String[]{pairA.getPair(), pairB.getPair(), pairC.getPair()});
                     Collections.sort(combineAll);
                     final String uniqueItem = String.join(", ", combineAll);
-                    if(!trianglesAlreadyFound.contains(uniqueItem)) {
+                    if (!trianglesAlreadyFound.contains(uniqueItem)) {
                         logger.debug("Found triangular pair: {} => {} => {}", pairA, pairB, pairC);
                         trianglesAlreadyFound.add(uniqueItem);
 
                         Triangle triangle = new Triangle();
-                        triangle.setBaseA(aBase);
-                        triangle.setBaseB(bBase);
-                        triangle.setBaseC(cBase);
-                        triangle.setQuoteA(aQuote);
-                        triangle.setQuoteB(bQuote);
-                        triangle.setQuoteC(cQuote);
-                        triangle.setPairA(pairA);
-                        triangle.setPairA(pairB);
-                        triangle.setPairA(pairC);
+                        triangle.setBaseA(baseA);
+                        triangle.setBaseB(baseB);
+                        triangle.setBaseC(baseC);
+                        triangle.setQuoteA(quoteA);
+                        triangle.setQuoteB(quoteB);
+                        triangle.setQuoteC(quoteC);
+                        triangle.setPairA(pairA.getPair());
+                        triangle.setPairA(pairB.getPair());
+                        triangle.setPairA(pairC.getPair());
                         triangle.setCombined(pairA + "," + pairB + "," + pairC);
                         result.add(triangle);
                     }
-
-
-
-
-
                 }
             }
-         }
-
+        }
 
         return result;
+    }
+
+    private List<PairQuote> mapPoloniexJsonToPairQuotes(ObjectNode priceData) {
+        List<PairQuote> pairQuotes = new ArrayList<>();
+
+        final Iterator<String> pairNames = priceData.fieldNames();
+
+        while (pairNames.hasNext()) {
+            final String pair = pairNames.next();
+//            JsonNode jsonNode = priceData.get(pair);
+            String[] split = pair.split("_");
+            String base = split[0];
+            String quote = split[1];
+
+            pairQuotes.add(new PairQuote(pair, base, quote));
+        }
+
+        return pairQuotes;
     }
 
     private Set<String> findCoinsNeededToCompleteTriangle(String aBase, String aQuote, String bBase, String bQuote) {
@@ -149,26 +157,39 @@ public class StructureTriangles {
         return !aBase.equals(bBase) && !aBase.equals(bQuote) && !aQuote.equals(bBase) && !aQuote.equals(bQuote);
     }
 
-    private JsonObject filterTradableCoins(String prices) {
-        JsonObject jsonObject = new JsonParser().parse(prices).getAsJsonObject();
+    private ObjectNode filterTradableCoins(String prices) {
+        ObjectMapper objectMapper = JsonFacade.getObjectMapper();
+        JsonNode jsonNode = null;
+        try {
+            jsonNode = objectMapper.readValue(prices, JsonNode.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
 
-        JsonObject result = new JsonObject();
+        ObjectNode result = objectMapper.createObjectNode();
 
-        long initialCoinCount = jsonObject.keySet().stream().count();
+        long initialCoinCount = jsonNode.size();
         logger.info("initial coin count" + initialCoinCount);
 
-        Map<String, String> filteredCoins = new HashMap<>();
-
-        for(String coin : jsonObject.keySet()) {
-            JsonObject obj = jsonObject.get(coin).getAsJsonObject();
-            int isFrozen = obj.get("isFrozen").getAsInt();
-            int postOnly = obj.get("postOnly").getAsInt();
-            if(isFrozen != 1 && postOnly != 1) {
-                result.add(coin, obj);
+        Iterator<String> iterator = jsonNode.fieldNames();
+        while(iterator.hasNext()) {
+            String pairName = iterator.next();
+            final JsonNode pairInfo = jsonNode.get(pairName);
+            if(pairInfo.get("isFrozen").asInt() != 1 && pairInfo.get("postOnly").asInt() != 1) {
+                result.set(pairName, pairInfo);
             }
-
         }
-        long afterFilterCoinCount = result.keySet().stream().count();
+
+//        for(String coin : jsonNode.fieldNames()) {
+//            JsonObject obj = jsonObject.get(coin).getAsJsonObject();
+//            int isFrozen = obj.get("isFrozen").getAsInt();
+//            int postOnly = obj.get("postOnly").getAsInt();
+//            if(isFrozen != 1 && postOnly != 1) {
+//                result.add(coin, obj);
+//            }
+//
+//        }
+        long afterFilterCoinCount = result.size();
 
         System.out.println("after filter coin count" + afterFilterCoinCount);
         return result;
