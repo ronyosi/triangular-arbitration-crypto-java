@@ -1,4 +1,4 @@
-package com.webhopper;
+package com.webhopper.business;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,6 +6,7 @@ import com.webhopper.entities.*;
 import com.webhopper.poloniex.BookEntry;
 import com.webhopper.poloniex.OrderBook;
 import com.webhopper.poloniex.PairQuote;
+import com.webhopper.utils.JsonFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,29 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ArbitrageCalculator {
-
     private static final Logger logger = LoggerFactory.getLogger(ArbitrageCalculator.class);
-
-//    final Gson gson = new Gson(); // Or use new GsonBuilder().create();
-    /*
-
-# Reformat Order Book for Depth Calculation
-def reformated_orderbook(prices, c_direction):
-    price_list_main = []
-    if c_direction == "base_to_quote":
-        for p in prices["asks"]:
-            ask_price = float(p[0])
-            adj_price = 1 / ask_price if ask_price != 0 else 0
-            adj_quantity = float(p[1]) * ask_price
-            price_list_main.append([adj_price, adj_quantity])
-    if c_direction == "quote_to_base":
-        for p in prices["bids"]:
-            bid_price = float(p[0])
-            adj_price = bid_price if bid_price != 0 else 0
-            adj_quantity = float(p[1])
-            price_list_main.append([adj_price, adj_quantity])
-    return price_list_main
-     */
 
    private OrderBook getBookForPair(String pair) {
        var url = String.format("https://poloniex.com/public?command=returnOrderBook&currencyPair=%s&depth=20", pair);
@@ -90,7 +69,6 @@ def reformated_orderbook(prices, c_direction):
         // Setup forward and reverse lists
         List<Pair> forward = new ArrayList<>();
         List<Pair> reverse = new ArrayList<>();
-
 
         forward.add(pairA);
         reverse.add(pairA);

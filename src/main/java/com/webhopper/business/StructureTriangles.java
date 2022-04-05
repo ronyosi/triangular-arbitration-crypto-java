@@ -1,4 +1,4 @@
-package com.webhopper;
+package com.webhopper.business;
 
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;

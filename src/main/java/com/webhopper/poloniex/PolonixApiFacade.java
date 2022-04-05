@@ -3,9 +3,8 @@ package com.webhopper.poloniex;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.webhopper.FileUtils;
-import com.webhopper.JsonFacade;
+import com.webhopper.utils.FileUtils;
+import com.webhopper.utils.JsonFacade;
 
 import java.io.IOException;
 import java.math.BigDecimal;

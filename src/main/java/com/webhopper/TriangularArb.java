@@ -1,6 +1,8 @@
 package com.webhopper;
 
 import com.google.common.base.Stopwatch;
+import com.webhopper.business.ArbitrageCalculator;
+import com.webhopper.business.StructureTriangles;
 import com.webhopper.entities.FullTriArbTrade;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
@@ -10,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import static com.webhopper.ArbitrageCalculator.logSurfaceRateInfo;
+import static com.webhopper.business.ArbitrageCalculator.logSurfaceRateInfo;
 
 public class TriangularArb {
 
