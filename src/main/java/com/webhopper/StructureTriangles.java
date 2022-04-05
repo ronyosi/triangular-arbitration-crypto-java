@@ -1,69 +1,28 @@
 package com.webhopper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PolonixApiFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.*;
 
 public class StructureTriangles {
     private static final Logger logger = LoggerFactory.getLogger(StructureTriangles.class);
 
-    private String getPrices() {
-        String tickers = null;
 
-        try {
-            tickers = FileUtils.openFile("tickers.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if(tickers != null) {
-            return tickers;
-        }
-
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder(
-                URI.create("https://poloniex.com/public?command=returnTicker"))
-                .header("accept", "application/json")
-                .build();
-
-        HttpResponse<String> response = null;
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        FileUtils.writeFile(response.body(), "tickers.json");
-
-        return response.body();
-    }
 
 
 
     public List<Triangle> structure()  {
         final List<Triangle> result = new LinkedList<>();
         final Set<String> trianglesAlreadyFound = new HashSet<>();
-        final String prices = getPrices();
-        ObjectNode tradableCoins = filterTradableCoins(prices);
-        List<PairQuote> pairQuotes = mapPoloniexJsonToPairQuotes(tradableCoins);
-        
-        for(PairQuote pairA : pairQuotes) {
+        final Map<String, PairQuote> pairQuotes = PolonixApiFacade.getPrices(false);
+
+        for(PairQuote pairA : pairQuotes.values()) {
             final String baseA = pairA.getBase();
             final String quoteA = pairA.getQuote();
-            for(PairQuote pairB : pairQuotes) {
+            for(PairQuote pairB : pairQuotes.values()) {
                 if (pairA.equals(pairB)) {
                     // skip bcs pairA should != pairB
                     continue;
@@ -75,7 +34,7 @@ public class StructureTriangles {
                     continue;
                 }
                 final Set<String> coinsToCompleteTriangle = findCoinsNeededToCompleteTriangle(baseA, quoteA, baseB, quoteB);
-                for(PairQuote pairC : pairQuotes) {
+                for(PairQuote pairC : pairQuotes.values()) {
                     if (pairC.equals(pairA) || pairC.equals(pairB)) {
                         continue;
                     }
@@ -106,6 +65,9 @@ public class StructureTriangles {
                         triangle.setPairA(pairB.getPair());
                         triangle.setPairA(pairC.getPair());
                         triangle.setCombined(pairA + "," + pairB + "," + pairC);
+                        triangle.a = new Triangle.Pair(baseA, quoteA, pairA.getPair());
+                        triangle.b = new Triangle.Pair(baseB, quoteB, pairB.getPair());
+                        triangle.c = new Triangle.Pair(baseC, quoteC, pairC.getPair());
                         result.add(triangle);
                     }
                 }
@@ -115,23 +77,6 @@ public class StructureTriangles {
         return result;
     }
 
-    private List<PairQuote> mapPoloniexJsonToPairQuotes(ObjectNode priceData) {
-        List<PairQuote> pairQuotes = new ArrayList<>();
-
-        final Iterator<String> pairNames = priceData.fieldNames();
-
-        while (pairNames.hasNext()) {
-            final String pair = pairNames.next();
-//            JsonNode jsonNode = priceData.get(pair);
-            String[] split = pair.split("_");
-            String base = split[0];
-            String quote = split[1];
-
-            pairQuotes.add(new PairQuote(pair, base, quote));
-        }
-
-        return pairQuotes;
-    }
 
     private Set<String> findCoinsNeededToCompleteTriangle(String aBase, String aQuote, String bBase, String bQuote) {
         Set<String> result = new HashSet<>();
@@ -156,43 +101,4 @@ public class StructureTriangles {
     private boolean aPairNotTradableForBPair(String aBase, String aQuote, String bBase, String bQuote) {
         return !aBase.equals(bBase) && !aBase.equals(bQuote) && !aQuote.equals(bBase) && !aQuote.equals(bQuote);
     }
-
-    private ObjectNode filterTradableCoins(String prices) {
-        ObjectMapper objectMapper = JsonFacade.getObjectMapper();
-        JsonNode jsonNode = null;
-        try {
-            jsonNode = objectMapper.readValue(prices, JsonNode.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-
-        ObjectNode result = objectMapper.createObjectNode();
-
-        long initialCoinCount = jsonNode.size();
-        logger.info("initial coin count" + initialCoinCount);
-
-        Iterator<String> iterator = jsonNode.fieldNames();
-        while(iterator.hasNext()) {
-            String pairName = iterator.next();
-            final JsonNode pairInfo = jsonNode.get(pairName);
-            if(pairInfo.get("isFrozen").asInt() != 1 && pairInfo.get("postOnly").asInt() != 1) {
-                result.set(pairName, pairInfo);
-            }
-        }
-
-//        for(String coin : jsonNode.fieldNames()) {
-//            JsonObject obj = jsonObject.get(coin).getAsJsonObject();
-//            int isFrozen = obj.get("isFrozen").getAsInt();
-//            int postOnly = obj.get("postOnly").getAsInt();
-//            if(isFrozen != 1 && postOnly != 1) {
-//                result.add(coin, obj);
-//            }
-//
-//        }
-        long afterFilterCoinCount = result.size();
-
-        System.out.println("after filter coin count" + afterFilterCoinCount);
-        return result;
-    }
-
 }

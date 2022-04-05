@@ -1,8 +1,11 @@
 package com.webhopper;
 
 import com.google.common.base.Stopwatch;
+import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PolonixApiFacade;
 
 import java.util.List;
+import java.util.Map;
 
 public class TriangularArb {
 
@@ -16,7 +19,9 @@ public class TriangularArb {
         System.out.println(stop);
 
         ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator();
-        arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0));
-
+        final Map<String, PairQuote> quotes = PolonixApiFacade.getPrices(true);
+        for(Triangle triangle : triangles) {
+            arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes);
+        }
     }
 }

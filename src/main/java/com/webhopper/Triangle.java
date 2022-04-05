@@ -3,6 +3,9 @@ package com.webhopper;
 import java.util.Objects;
 
 public class Triangle {
+    Pair a;
+    Pair b;
+    Pair c;
     private String baseA;
     private String baseB;
     private String baseC;
@@ -121,5 +124,17 @@ public class Triangle {
     @Override
     public int hashCode() {
         return Objects.hash(baseA, baseB, baseC, quoteA, quoteB, quoteC, pairA, pairB, pairC, combined);
+    }
+
+    static class Pair {
+        String base;
+        String quote;
+        String pair;
+
+        public Pair(String base, String quote, String pair) {
+            this.base = base;
+            this.quote = quote;
+            this.pair = pair;
+        }
     }
 }
