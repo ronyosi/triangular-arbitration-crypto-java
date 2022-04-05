@@ -1,5 +1,7 @@
 package com.webhopper;
 
+import com.webhopper.entities.Pair;
+import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
 import com.webhopper.poloniex.PolonixApiFacade;
 import org.slf4j.Logger;
@@ -65,9 +67,9 @@ public class StructureTriangles {
                         triangle.setPairA(pairB.getPair());
                         triangle.setPairA(pairC.getPair());
                         triangle.setCombined(pairA + "," + pairB + "," + pairC);
-                        triangle.a = new Triangle.Pair(baseA, quoteA, pairA.getPair());
-                        triangle.b = new Triangle.Pair(baseB, quoteB, pairB.getPair());
-                        triangle.c = new Triangle.Pair(baseC, quoteC, pairC.getPair());
+                        triangle.setA(new Pair(baseA, quoteA, pairA.getPair()));
+                        triangle.setB(new Pair(baseB, quoteB, pairB.getPair()));
+                        triangle.setC(new Pair(baseC, quoteC, pairC.getPair()));
                         result.add(triangle);
                     }
                 }

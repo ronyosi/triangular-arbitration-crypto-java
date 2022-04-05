@@ -8,6 +8,7 @@ import com.webhopper.FileUtils;
 import com.webhopper.JsonFacade;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -80,7 +81,7 @@ public class PolonixApiFacade {
             double ask = jsonNode.get("lowestAsk").asDouble();
             double bid = jsonNode.get("highestBid").asDouble();
 
-            pairQuotes.put(pair, new PairQuote(pair, base, quote, bid, ask));
+            pairQuotes.put(pair, new PairQuote(pair, base, quote, new BigDecimal(bid), new BigDecimal(ask)));
         }
 
         return pairQuotes;

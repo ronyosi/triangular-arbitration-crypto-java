@@ -1,13 +1,15 @@
 package com.webhopper.poloniex;
 
+import java.math.BigDecimal;
+
 public class PairQuote {
     private String pair;
     private String base;
     private String quote;
-    private Double bid;
-    private Double ask;
+    private BigDecimal bid;
+    private BigDecimal ask;
 
-    public PairQuote(String pair, String base, String quote, Double bid, Double ask) {
+    public PairQuote(String pair, String base, String quote, BigDecimal bid, BigDecimal ask) {
         this.pair = pair;
         this.base = base;
         this.quote = quote;
@@ -39,19 +41,19 @@ public class PairQuote {
         this.quote = quote;
     }
 
-    public Double getBid() {
+    public BigDecimal getBid() {
         return bid;
     }
 
-    public void setBid(Double bid) {
+    public void setBid(BigDecimal bid) {
         this.bid = bid;
     }
 
-    public Double getAsk() {
+    public BigDecimal getAsk() {
         return ask;
     }
 
-    public void setAsk(Double ask) {
+    public void setAsk(BigDecimal ask) {
         this.ask = ask;
     }
 }

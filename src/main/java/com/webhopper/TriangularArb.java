@@ -1,11 +1,16 @@
 package com.webhopper;
 
 import com.google.common.base.Stopwatch;
+import com.webhopper.entities.FullTriArbTrade;
+import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
 import com.webhopper.poloniex.PolonixApiFacade;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+
+import static com.webhopper.ArbitrageCalculator.logSurfaceRateInfo;
 
 public class TriangularArb {
 
@@ -21,7 +26,11 @@ public class TriangularArb {
         ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator();
         final Map<String, PairQuote> quotes = PolonixApiFacade.getPrices(true);
         for(Triangle triangle : triangles) {
-            arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes);
+            final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(100), new BigDecimal(0));
+            for(FullTriArbTrade candate : candidates) {
+                logSurfaceRateInfo(candate);
+            }
+
         }
     }
 }

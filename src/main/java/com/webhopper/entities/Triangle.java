@@ -1,11 +1,11 @@
-package com.webhopper;
+package com.webhopper.entities;
 
 import java.util.Objects;
 
 public class Triangle {
-    Pair a;
-    Pair b;
-    Pair c;
+    private Pair a;
+    private Pair b;
+    private Pair c;
     private String baseA;
     private String baseB;
     private String baseC;
@@ -16,6 +16,30 @@ public class Triangle {
     private String pairB;
     private String pairC;
     private String combined;
+
+    public Pair getA() {
+        return a;
+    }
+
+    public void setA(Pair a) {
+        this.a = a;
+    }
+
+    public Pair getB() {
+        return b;
+    }
+
+    public void setB(Pair b) {
+        this.b = b;
+    }
+
+    public Pair getC() {
+        return c;
+    }
+
+    public void setC(Pair c) {
+        this.c = c;
+    }
 
     public String getBaseA() {
         return baseA;
@@ -124,17 +148,5 @@ public class Triangle {
     @Override
     public int hashCode() {
         return Objects.hash(baseA, baseB, baseC, quoteA, quoteB, quoteC, pairA, pairB, pairC, combined);
-    }
-
-    static class Pair {
-        String base;
-        String quote;
-        String pair;
-
-        public Pair(String base, String quote, String pair) {
-            this.base = base;
-            this.quote = quote;
-            this.pair = pair;
-        }
     }
 }
