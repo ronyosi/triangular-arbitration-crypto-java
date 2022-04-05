@@ -26,11 +26,13 @@ public class TriangularArb {
         ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator();
         final Map<String, PairQuote> quotes = PolonixApiFacade.getPrices(true);
         for(Triangle triangle : triangles) {
-            final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(100), new BigDecimal(0));
+            final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500), new BigDecimal(0));
             for(FullTriArbTrade candate : candidates) {
                 logSurfaceRateInfo(candate);
-            }
+                Map<String, Object> stringObjectMap = arbitrageCalculator.calculateDepthArbitrage(candate);
+                System.out.println(stringObjectMap);
 
+            }
         }
     }
 }

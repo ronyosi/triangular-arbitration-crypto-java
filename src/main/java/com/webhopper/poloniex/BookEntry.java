@@ -1,15 +1,17 @@
 package com.webhopper.poloniex;
 
+import java.math.BigDecimal;
+
 public class BookEntry {
-    private final double price;
+    private final BigDecimal price;
     private final int quantity;
 
-    public BookEntry(double price, int quantity) {
+    public BookEntry(BigDecimal price, int quantity) {
         this.price = price;
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 

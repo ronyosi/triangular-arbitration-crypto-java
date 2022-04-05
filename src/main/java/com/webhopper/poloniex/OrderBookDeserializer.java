@@ -1,6 +1,7 @@
 package com.webhopper.poloniex;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,7 @@ public class OrderBookDeserializer extends JsonDeserializer<OrderBook> {
             final JsonNode nextTuple = asksIterator.next();
             double price = nextTuple.get(0).asDouble();
             int quantity = nextTuple.get(1).asInt();
-            hydratedAsks.add(new BookEntry(price, quantity));
+            hydratedAsks.add(new BookEntry(new BigDecimal(price), quantity));
         }
 
         orderBook.setAsks(hydratedAsks);
@@ -41,7 +42,7 @@ public class OrderBookDeserializer extends JsonDeserializer<OrderBook> {
             final JsonNode nextTuple = bidsIterator.next();
             double price = nextTuple.get(0).asDouble();
             int quantity = nextTuple.get(1).asInt();
-            hydratedBids.add(new BookEntry(price, quantity));
+            hydratedBids.add(new BookEntry(new BigDecimal(price), quantity));
         }
 
         orderBook.setBids(hydratedBids);
