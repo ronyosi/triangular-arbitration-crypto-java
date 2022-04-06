@@ -27,7 +27,7 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ArbitrageCalculatorTests {
+public class SurfaceArbitrageCalculatorTests {
     @Mock
     private PoloniexApi poloniexApi;
 
@@ -51,7 +51,7 @@ public class ArbitrageCalculatorTests {
         final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
-        final ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator(polonixService);
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
         final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
         Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
         FullTriArbTrade fullTriArbTradeForward = candidates.get(0);
@@ -71,7 +71,7 @@ public class ArbitrageCalculatorTests {
         final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
-        final ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator(polonixService);
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
         final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
         Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
         FullTriArbTrade fullTriArbTradeForward = candidates.get(0);

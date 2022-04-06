@@ -1,7 +1,8 @@
 package com.webhopper;
 
 import com.google.common.base.Stopwatch;
-import com.webhopper.business.ArbitrageCalculator;
+import com.webhopper.business.RealArbitrageCalculator;
+import com.webhopper.business.SurfaceArbitrageCalculator;
 import com.webhopper.business.StructureTriangles;
 import com.webhopper.entities.FullTriArbTrade;
 import com.webhopper.entities.Triangle;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.webhopper.business.ArbitrageCalculator.logSurfaceRateInfo;
+import static com.webhopper.business.SurfaceArbitrageCalculator.logSurfaceRateInfo;
 
 public class TriangularArbitrationApp {
     private static final Logger logger = LoggerFactory.getLogger(TriangularArbitrationApp.class);
@@ -50,9 +51,10 @@ public class TriangularArbitrationApp {
     }
 
     private void findArbitrageFromTriangles(List<Triangle> triangles) {
-        final double percentProfitExpected = 0.5;
+        final double percentProfitExpected = 0;
 
-        final ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator(polonixService);
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
+        final RealArbitrageCalculator realArbitrageCalculator = new RealArbitrageCalculator(polonixService);
         final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
         for(Triangle triangle : triangles) {
             final List<FullTriArbTrade> surfaceRateCalculations = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500));
@@ -61,7 +63,7 @@ public class TriangularArbitrationApp {
 
             for(FullTriArbTrade candidate : profitableSurfaceRates) {
                 logSurfaceRateInfo(candidate);
-                Map<String, Object> stringObjectMap = arbitrageCalculator.calculateDepthArbitrage(candidate);
+                Map<String, Object> stringObjectMap = realArbitrageCalculator.calculateDepthArbitrage(candidate);
                 System.out.println(stringObjectMap);
 
             }
