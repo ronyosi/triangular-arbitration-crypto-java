@@ -18,8 +18,6 @@ public class StructureTriangles {
         this.polonixService = polonixService;
     }
 
-
-
     public List<Triangle> structure()  {
         final List<Triangle> result = new LinkedList<>();
         final Set<String> trianglesAlreadyFound = new HashSet<>();
@@ -67,10 +65,11 @@ public class StructureTriangles {
                         triangle.setQuoteA(quoteA);
                         triangle.setQuoteB(quoteB);
                         triangle.setQuoteC(quoteC);
+                        // todo:comment these 3 out?
                         triangle.setPairA(pairA.getPair());
-                        triangle.setPairA(pairB.getPair());
-                        triangle.setPairA(pairC.getPair());
-                        triangle.setCombined(pairA + "," + pairB + "," + pairC);
+                        triangle.setPairB(pairB.getPair());
+                        triangle.setPairC(pairC.getPair());
+                        triangle.setCombined(pairA.getPair() + "," + pairB.getPair() + "," + pairC.getPair());
                         triangle.setA(new Pair(baseA, quoteA, pairA.getPair()));
                         triangle.setB(new Pair(baseB, quoteB, pairB.getPair()));
                         triangle.setC(new Pair(baseC, quoteC, pairC.getPair()));
