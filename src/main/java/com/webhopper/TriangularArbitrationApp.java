@@ -49,7 +49,7 @@ public class TriangularArbitrationApp {
     }
 
     private void findArbitrageFromTriangles(List<Triangle> triangles) {
-        ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator();
+        final ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator(polonixService);
         final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
         for(Triangle triangle : triangles) {
             final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500), new BigDecimal(0));

@@ -1,9 +1,10 @@
-package com.webhopper.poloniex;
-
+package com.webhopper.business;
 
 import com.webhopper.business.StructureTriangles;
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
+import com.webhopper.poloniex.PoloniexApi;
+import com.webhopper.poloniex.PolonixService;
 import com.webhopper.utils.FileUtils;
 import org.junit.Before;
 import org.junit.Test;

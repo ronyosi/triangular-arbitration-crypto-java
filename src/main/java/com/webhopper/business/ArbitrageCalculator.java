@@ -1,22 +1,15 @@
 package com.webhopper.business;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webhopper.entities.*;
 import com.webhopper.poloniex.BookEntry;
 import com.webhopper.poloniex.OrderBook;
 import com.webhopper.poloniex.PairQuote;
-import com.webhopper.utils.JsonFacade;
+import com.webhopper.poloniex.PolonixService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,34 +18,12 @@ import java.util.Map;
 public class ArbitrageCalculator {
     private static final Logger logger = LoggerFactory.getLogger(ArbitrageCalculator.class);
 
-   private OrderBook getBookForPair(String pair) {
-       var url = String.format("https://poloniex.com/public?command=returnOrderBook&currencyPair=%s&depth=20", pair);
+    private PolonixService poloniexService;
 
-       var client = HttpClient.newHttpClient();
-       var request = HttpRequest.newBuilder(
-               URI.create(url))
-               .header("accept", "application/json")
-               .build();
+    public ArbitrageCalculator(PolonixService poloniexService) {
+        this.poloniexService = poloniexService;
 
-       HttpResponse<String> response = null;
-       try {
-           response = client.send(request, HttpResponse.BodyHandlers.ofString());
-       } catch (IOException e) {
-           e.printStackTrace();
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
-       ObjectMapper objectMapper = JsonFacade.getObjectMapper();
-
-       OrderBook orderBook = null; // deserializes json into target2
-       try {
-           orderBook = objectMapper.readValue(response.body(), OrderBook.class);
-       } catch (JsonProcessingException e) {
-           e.printStackTrace();
-       }
-
-       return orderBook;
-   }
+    }
 
     public List<FullTriArbTrade> calculateSurfaceArbitrage(
             final Triangle triangle,
@@ -101,7 +72,7 @@ public class ArbitrageCalculator {
         trade1Forward.setAmountIn(amount);
         trade1Forward.setCoinIn(pairA.getBase());
         trade1Forward.setCoinOut(pairA.getQuote());
-        trade1Forward.setSwapRate(new BigDecimal(1.0).divide(pairAPricing.getAsk(),14, RoundingMode.HALF_UP));
+        trade1Forward.setSwapRate(new BigDecimal(1.0).divide(pairAPricing.getAsk(),7, RoundingMode.HALF_UP));
         trade1Forward.setAmountOut(trade1Forward.getSwapRate().multiply(amount));
         forwardTriArbTrades.add(trade1Forward);
 
@@ -209,9 +180,9 @@ public class ArbitrageCalculator {
        final TriArbTradeLeg leg3 = triangle.getLeg3();
        final String pairC = leg3.getPair().getPair();
 
-       final OrderBook bookForPairA = getBookForPair(pairA);
-       final OrderBook bookForPairB = getBookForPair(pairB);
-       final OrderBook bookForPairC = getBookForPair(pairC);
+       final OrderBook bookForPairA = poloniexService.getBookForPair(pairA);
+       final OrderBook bookForPairB = poloniexService.getBookForPair(pairB);
+       final OrderBook bookForPairC = poloniexService.getBookForPair(pairC);
 
        final List<BookEntry> repriceForLeg1Calculation = reformatOrderbook(bookForPairA, leg1.getPairTradeDirection());
        final List<BookEntry> repriceForLeg2Calculation = reformatOrderbook(bookForPairB, leg2.getPairTradeDirection());
