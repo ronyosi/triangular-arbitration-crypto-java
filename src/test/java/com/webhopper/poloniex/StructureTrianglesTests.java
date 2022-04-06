@@ -2,6 +2,7 @@ package com.webhopper.poloniex;
 
 
 import com.webhopper.business.StructureTriangles;
+import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
 import com.webhopper.utils.FileUtils;
 import org.junit.Before;
@@ -18,8 +19,7 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
@@ -92,6 +92,79 @@ public class StructureTrianglesTests {
         }
 
         //todo: check that a triangle is correct in that it can be used to create the forward and reverse leg1,leg2,leg3
+        verifyTradingPathPossible(triangle);
+
+
+    }
+
+    private void verifyTradingPathPossible(Triangle triangle) {
+        final Pair pairA = triangle.getA();
+        String baseA = pairA.getBase();
+        String quoteA = pairA.getQuote();
+
+        final Pair pairB = triangle.getB();
+        String baseB = pairB.getBase();
+        String quoteB = pairB.getQuote();
+
+        final Pair pairC = triangle.getC();
+        String baseC = pairC.getBase();
+        String quoteC = pairC.getQuote();
+
+        // Verify that forward direction is tradable.
+
+        // Forward trades start with base of a, so quoteA needs to match one of 4 options of b and c
+        if(quoteA.equals(baseB)) {
+            if(quoteB.equals(baseC)) {
+                assertEquals(quoteC, baseA);
+            } else if(quoteB.equals(quoteC)) {
+                assertEquals(baseC, baseA);
+            }
+        } else if(quoteA.equals(quoteB)) {
+            if(baseB.equals(baseC)) {
+                assertEquals(quoteC, baseA);
+            } else if(baseB.equals(quoteC)) {
+                assertEquals(baseC, baseA);
+            }
+        } else if(quoteA.equals(baseC)) {
+            if(quoteC.equals(baseB)) {
+                assertEquals(quoteB, baseA);
+            } else if(quoteC.equals(quoteB)) {
+                assertEquals(baseB, baseA);
+            }
+        } else if(quoteA.equals(quoteC)) {
+            if(baseC.equals(baseB)) {
+                assertEquals(quoteB, baseA);
+            } else if(baseC.equals(quoteB)) {
+                assertEquals(baseB, baseA);
+            }
+        }
+
+        // Reverse trades start with quote of a, so baseA needs to match one of 4 options of b and c
+        if(baseA.equals(baseB)) {
+            if(quoteB.equals(baseC)) {
+                assertEquals(quoteC, quoteA);
+            } else if(quoteB.equals(quoteC)) {
+                assertEquals(baseC, quoteA);
+            }
+        } else if(baseA.equals(quoteB)) {
+            if(baseB.equals(baseC)) {
+                assertEquals(quoteC, quoteA);
+            } else if(baseB.equals(quoteC)) {
+                assertEquals(baseC, quoteA);
+            }
+        } else if(baseA.equals(baseC)) {
+            if(quoteC.equals(baseB)) {
+                assertEquals(quoteB, quoteA);
+            } else if(quoteC.equals(quoteB)) {
+                assertEquals(baseB, quoteA);
+            }
+        } else if(baseA.equals(quoteC)) {
+            if(baseC.equals(baseB)) {
+                assertEquals(quoteB, quoteA);
+            } else if(baseC.equals(quoteB)) {
+                assertEquals(baseB, quoteA);
+            }
+        }
     }
 
     private void checkThatNoDuplicateTrianglesCreated(final List<Triangle> triangles) {
