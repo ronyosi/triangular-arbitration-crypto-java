@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.webhopper.business.ArbitrageCalculator.logSurfaceRateInfo;
 
@@ -49,13 +50,18 @@ public class TriangularArbitrationApp {
     }
 
     private void findArbitrageFromTriangles(List<Triangle> triangles) {
+        final double percentProfitExpected = 0.5;
+
         final ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator(polonixService);
         final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
         for(Triangle triangle : triangles) {
-            final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500), new BigDecimal(0));
-            for(FullTriArbTrade candate : candidates) {
-                logSurfaceRateInfo(candate);
-                Map<String, Object> stringObjectMap = arbitrageCalculator.calculateDepthArbitrage(candate);
+            final List<FullTriArbTrade> surfaceRateCalculations = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500));
+
+            final List<FullTriArbTrade> profitableSurfaceRates = surfaceRateCalculations.stream().filter(t -> t.getProfitPercent().doubleValue() > percentProfitExpected).collect(Collectors.toList());
+
+            for(FullTriArbTrade candidate : profitableSurfaceRates) {
+                logSurfaceRateInfo(candidate);
+                Map<String, Object> stringObjectMap = arbitrageCalculator.calculateDepthArbitrage(candidate);
                 System.out.println(stringObjectMap);
 
             }

@@ -28,8 +28,7 @@ public class ArbitrageCalculator {
     public List<FullTriArbTrade> calculateSurfaceArbitrage(
             final Triangle triangle,
             final Map<String, PairQuote> quotes,
-            final BigDecimal amount,
-            final BigDecimal percentProfitExpected) {
+            final BigDecimal amount) {
         // a is always the first pair whether we go in forward or reverse.
         final Pair pairA = triangle.getA();
         final Pair pairB = triangle.getB();
@@ -93,13 +92,15 @@ public class ArbitrageCalculator {
 
         completeSurfaceCalculation(quotes, reverse, reverseTriArbTrades);
 
-        final List<FullTriArbTrade> profitableTrades = new ArrayList<>();
+        final List<FullTriArbTrade> forwardAndReverseCalculations = new ArrayList<>();
 
         logger.info("FORWARD TRADES for {}", formatTradeText(forwardTriArbTrades));
-        calculateProfitability(amount, percentProfitExpected, forwardTriArbTrades, profitableTrades);
+        final FullTriArbTrade forwardTrade = calculateAndAddProfitability(amount, forwardTriArbTrades);
+        forwardAndReverseCalculations.add(forwardTrade);
         logger.info("REVERSE TRADES for {}", formatTradeText(reverseTriArbTrades));
-        calculateProfitability(amount, percentProfitExpected, reverseTriArbTrades, profitableTrades);
-        return profitableTrades;
+        final FullTriArbTrade reverseTrade = calculateAndAddProfitability(amount, reverseTriArbTrades);
+        forwardAndReverseCalculations.add(reverseTrade);
+        return forwardAndReverseCalculations;
     }
 
     private String formatTradeText(List<TriArbTradeLeg> trade) {
@@ -109,11 +110,9 @@ public class ArbitrageCalculator {
         return String.format("%s => %s => %s", leg1, leg2, leg3);
     }
 
-    private void calculateProfitability(
+    private FullTriArbTrade calculateAndAddProfitability(
             final BigDecimal amount,
-            final BigDecimal percentProfitExpected,
-            final List<TriArbTradeLeg> triArbTrades,
-            final List<FullTriArbTrade> profitableTrades) {
+            final List<TriArbTradeLeg> triArbTrades) {
 
         final TriArbTradeLeg tradeA = triArbTrades.get(0);
         final TriArbTradeLeg tradeB = triArbTrades.get(1);
@@ -124,12 +123,7 @@ public class ArbitrageCalculator {
         final BigDecimal divide = profit.divide(amount, 7, RoundingMode.HALF_UP);
         final BigDecimal profitPercentage = divide.multiply(new BigDecimal(100));
 
-        final FullTriArbTrade fullTriArbTrade = new FullTriArbTrade(tradeA, tradeB, endTrade, profit, profitPercentage);
-//        logSurfaceRateInfo(fullTriArbTrade);
-        if(profitPercentage.compareTo(percentProfitExpected) > 0) {
-            logger.info("This is potentially Profitable!");
-            profitableTrades.add(fullTriArbTrade);
-        }
+        return new FullTriArbTrade(tradeA, tradeB, endTrade, profit, profitPercentage);
     }
 
     public static void logSurfaceRateInfo(FullTriArbTrade fullTriArbTrade) {

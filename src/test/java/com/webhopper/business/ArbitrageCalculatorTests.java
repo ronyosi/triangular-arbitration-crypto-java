@@ -1,6 +1,7 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.FullTriArbTrade;
+import com.webhopper.entities.PairTradeDirection;
 import com.webhopper.entities.TriArbTradeLeg;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
@@ -41,7 +42,7 @@ public class ArbitrageCalculatorTests {
     }
 
     @Test
-    public void testSurfaceProfitableArbitrageCalculatedCorrectly() throws IOException {
+    public void testProfitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
         // 1: Create triangles.
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "ticker_for_1_profitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
@@ -51,23 +52,27 @@ public class ArbitrageCalculatorTests {
 
         // 2: Calculate surface rate
         final ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator(polonixService);
-        final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500), new BigDecimal(0));
-        Assert.assertEquals(1, candidates.size());// There should be only one triangle in that file loaded above.
-        FullTriArbTrade fullTriArbTrade = candidates.get(0);
+        final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
+        Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
+        FullTriArbTrade fullTriArbTradeForward = candidates.get(0);
+        FullTriArbTrade fullTriArbTradeReverse = candidates.get(1);
 
+        checkProfitableForwardCalculation(quotes, fullTriArbTradeForward, BASE_TO_QUOTE, QUOTE_TO_BASE, BASE_TO_QUOTE);
+        checkProfitableForwardCalculation(quotes, fullTriArbTradeReverse, QUOTE_TO_BASE, QUOTE_TO_BASE, BASE_TO_QUOTE);
+    }
+
+    private void checkProfitableForwardCalculation(Map<String, PairQuote> quotes, FullTriArbTrade fullTriArbTrade,
+    PairTradeDirection leg1Direction, PairTradeDirection leg2Direction, PairTradeDirection leg3Direction) {
         TriArbTradeLeg leg1 = fullTriArbTrade.getLeg1();
         TriArbTradeLeg leg2 = fullTriArbTrade.getLeg2();
         TriArbTradeLeg leg3 = fullTriArbTrade.getLeg3();
 
-        Assert.assertEquals(leg1.getCoinOut(), leg2.getCoinIn());
-        Assert.assertEquals(leg2.getCoinOut(), leg3.getCoinIn());
-        Assert.assertEquals(leg3.getCoinOut(), leg1.getCoinIn());
+        verifyCoinsInAndOutOfLegsAReCompatible(leg1, leg2, leg3);
 
         // Verify leg1 calculation
         final BigDecimal calculatedLeg1SwapRate = leg1.getSwapRate();
-        Assert.assertEquals(BASE_TO_QUOTE, leg1.getPairTradeDirection());
-        final PairQuote leg1PairQuote = quotes.get(leg1.getPair().getPair());
-        BigDecimal expectedLeg1SwapRate = new BigDecimal(1).divide(leg1PairQuote.getAsk(), 7, RoundingMode.HALF_UP);
+        Assert.assertEquals(leg1Direction, leg1.getPairTradeDirection());
+        final BigDecimal expectedLeg1SwapRate = calculateExpectedSwapRate(leg1, quotes);
         Assert.assertEquals(calculatedLeg1SwapRate, expectedLeg1SwapRate);
 
         final BigDecimal expectedLeg1CoinOut = calculatedLeg1SwapRate.multiply(leg1.getAmountIn());
@@ -75,9 +80,8 @@ public class ArbitrageCalculatorTests {
 
         //Verify Leg2 calculation
         final BigDecimal calculatedLeg2SwapRate = leg2.getSwapRate();
-        Assert.assertEquals(QUOTE_TO_BASE, leg2.getPairTradeDirection());
-        final PairQuote leg2PairQuote = quotes.get(leg2.getPair().getPair());
-        BigDecimal expectedLeg2SwapRate = leg2PairQuote.getBid();
+        Assert.assertEquals(leg2Direction, leg2.getPairTradeDirection());
+        final BigDecimal expectedLeg2SwapRate = calculateExpectedSwapRate(leg2, quotes);
         Assert.assertEquals(calculatedLeg2SwapRate, expectedLeg2SwapRate);
 
         final BigDecimal expectedLeg2CoinOut = calculatedLeg2SwapRate.multiply(leg2.getAmountIn());
@@ -85,9 +89,8 @@ public class ArbitrageCalculatorTests {
 
         //Verify Leg3 calculation
         final BigDecimal calculatedLeg3SwapRate = leg3.getSwapRate();
-        Assert.assertEquals(BASE_TO_QUOTE, leg3.getPairTradeDirection());
-        final PairQuote leg3PairQuote = quotes.get(leg3.getPair().getPair());
-        BigDecimal expectedLeg3SwapRate = new BigDecimal(1).divide(leg3PairQuote.getAsk(), 7, RoundingMode.HALF_UP);
+        Assert.assertEquals(leg3Direction, leg3.getPairTradeDirection());
+        final BigDecimal expectedLeg3SwapRate = calculateExpectedSwapRate(leg3, quotes);
         Assert.assertEquals(calculatedLeg3SwapRate, expectedLeg3SwapRate);
 
         final BigDecimal expectedLeg3CoinOut = calculatedLeg3SwapRate.multiply(leg3.getAmountIn());
@@ -98,7 +101,29 @@ public class ArbitrageCalculatorTests {
         final BigDecimal expectedProfit = leg3.getAmountOut().subtract(leg1.getAmountIn());
         Assert.assertEquals(expectedProfit, calculatedProfit);
 
-        final BigDecimal expectedProfitPercent = calculatedProfit.divide(leg1.getAmountIn(), 7, RoundingMode.HALF_UP ).multiply(new BigDecimal(100.00));
+        final BigDecimal expectedProfitPercent = calculatedProfit.divide(leg1.getAmountIn(), 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100.00));
         Assert.assertEquals(expectedProfitPercent, fullTriArbTrade.getProfitPercent());
+    }
+
+    private BigDecimal calculateExpectedSwapRate(final TriArbTradeLeg leg, final Map<String, PairQuote> quotes) {
+        final PairQuote quote = quotes.get(leg.getPair().getPair());
+
+        if(leg.getPairTradeDirection() == BASE_TO_QUOTE) {
+            return new BigDecimal(1).divide(quote.getAsk(), 7, RoundingMode.HALF_UP);
+        } else if(leg.getPairTradeDirection() == QUOTE_TO_BASE) {
+            return quote.getBid();
+        } else {
+            return null;
+        }
+    }
+
+    @Test
+    public void testUnprofitableSurfaceProfitableArbitrageCalculatedCorrectly() throws IOException {
+    }
+
+    private void verifyCoinsInAndOutOfLegsAReCompatible(TriArbTradeLeg leg1, TriArbTradeLeg leg2, TriArbTradeLeg leg3) {
+        Assert.assertEquals(leg1.getCoinOut(), leg2.getCoinIn());
+        Assert.assertEquals(leg2.getCoinOut(), leg3.getCoinIn());
+        Assert.assertEquals(leg3.getCoinOut(), leg1.getCoinIn());
     }
 }
