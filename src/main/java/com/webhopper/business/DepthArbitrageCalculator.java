@@ -3,7 +3,6 @@ package com.webhopper.business;
 import com.webhopper.entities.*;
 import com.webhopper.poloniex.BookEntry;
 import com.webhopper.poloniex.OrderBook;
-import com.webhopper.poloniex.PairQuote;
 import com.webhopper.poloniex.PolonixService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,12 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RealArbitrageCalculator {
-    private static final Logger logger = LoggerFactory.getLogger(RealArbitrageCalculator.class);
+public class DepthArbitrageCalculator {
+    private static final Logger logger = LoggerFactory.getLogger(DepthArbitrageCalculator.class);
 
     private PolonixService poloniexService;
 
-    public RealArbitrageCalculator(PolonixService poloniexService) {
+    public DepthArbitrageCalculator(PolonixService poloniexService) {
         this.poloniexService = poloniexService;
 
     }

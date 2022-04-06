@@ -1,7 +1,7 @@
 package com.webhopper;
 
 import com.google.common.base.Stopwatch;
-import com.webhopper.business.RealArbitrageCalculator;
+import com.webhopper.business.DepthArbitrageCalculator;
 import com.webhopper.business.SurfaceArbitrageCalculator;
 import com.webhopper.business.StructureTriangles;
 import com.webhopper.entities.FullTriArbTrade;
@@ -54,7 +54,7 @@ public class TriangularArbitrationApp {
         final double percentProfitExpected = 0;
 
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
-        final RealArbitrageCalculator realArbitrageCalculator = new RealArbitrageCalculator(polonixService);
+        final DepthArbitrageCalculator realArbitrageCalculator = new DepthArbitrageCalculator(polonixService);
         final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
         for(Triangle triangle : triangles) {
             final List<FullTriArbTrade> surfaceRateCalculations = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500));

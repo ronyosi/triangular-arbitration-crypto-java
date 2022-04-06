@@ -1,44 +1,44 @@
 {
   "BTC_MATIC": {
     "id": 295,
-    "last": "0.00003495",
-    "lowestAsk": "0.00003503",
-    "highestBid": "0.00003495",
-    "percentChange": "-0.00851063",
-    "baseVolume": "0.10973120",
-    "quoteVolume": "3128.96089452",
+    "last": "0.00003379",
+    "lowestAsk": "0.00003400",
+    "highestBid": "0.00003383",
+    "percentChange": "-0.03401943",
+    "baseVolume": "0.04056348",
+    "quoteVolume": "1182.99334340",
     "isFrozen": "0",
     "postOnly": "0",
     "marginTradingEnabled": "0",
-    "high24hr": "0.00003563",
-    "low24hr": "0.00003495"
+    "high24hr": "0.00003502",
+    "low24hr": "0.00003377"
   },
   "USDT_MATIC": {
     "id": 296,
-    "last": "1.59929666",
-    "lowestAsk": "1.60426866",
-    "highestBid": "1.59964622",
-    "percentChange": "-0.02755442",
-    "baseVolume": "35154.22515208",
-    "quoteVolume": "21682.44045686",
+    "last": "1.47117000",
+    "lowestAsk": "1.47223808",
+    "highestBid": "1.46892441",
+    "percentChange": "-0.07869824",
+    "baseVolume": "34813.88475519",
+    "quoteVolume": "22572.51851996",
     "isFrozen": "0",
     "postOnly": "0",
     "marginTradingEnabled": "0",
-    "high24hr": "1.67400000",
-    "low24hr": "1.59809810"
+    "high24hr": "1.59683837",
+    "low24hr": "1.46556025"
   },
   "USDT_BTC": {
     "id": 121,
-    "last": "45823.85796445",
-    "lowestAsk": "45828.82847425",
-    "highestBid": "45822.34425247",
-    "percentChange": "-0.02001268",
-    "baseVolume": "5912111.03807391",
-    "quoteVolume": "127.86948637",
+    "last": "43383.88261107",
+    "lowestAsk": "43380.22872374",
+    "highestBid": "43345.71743759",
+    "percentChange": "-0.05220442",
+    "baseVolume": "13988978.32318584",
+    "quoteVolume": "315.55648696",
     "isFrozen": "0",
     "postOnly": "0",
     "marginTradingEnabled": "1",
-    "high24hr": "47172.61377152",
-    "low24hr": "45487.96221544"
+    "high24hr": "45782.04386738",
+    "low24hr": "43218.78050000"
   }
 }

@@ -23,7 +23,6 @@ public class PolonixService {
     }
 
     public OrderBook getBookForPair(String pair) {
-
         String json = poloniexApi.httpGetOrderBookForPair(pair);
         return  mapPoloniexBookJson(json);
 
