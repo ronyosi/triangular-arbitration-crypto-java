@@ -31,4 +31,9 @@ public class FileUtils {
             e.printStackTrace();
         }
     }
+
+    public static String fileInResourceFolderToString(ClassLoader classLoader, String fileName) throws IOException {
+        final File file = new File(Objects.requireNonNull(classLoader.getResource(fileName)).getFile());
+        return new String(readAllBytes(file.toPath()));
+    }
 }

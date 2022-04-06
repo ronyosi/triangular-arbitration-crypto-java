@@ -6,7 +6,8 @@ import com.webhopper.business.StructureTriangles;
 import com.webhopper.entities.FullTriArbTrade;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
-import com.webhopper.poloniex.PolonixApiFacade;
+import com.webhopper.poloniex.PoloniexApi;
+import com.webhopper.poloniex.PolonixService;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,10 +15,12 @@ import java.util.Map;
 
 import static com.webhopper.business.ArbitrageCalculator.logSurfaceRateInfo;
 
-public class TriangularArb {
+public class TriangularArbitrationApp {
 
     public static void main(String[] args)  {
-        StructureTriangles structureTriangles = new StructureTriangles();
+        PoloniexApi poloniexApi = new PoloniexApi();
+        PolonixService polonixService = new PolonixService(poloniexApi);
+        StructureTriangles structureTriangles = new StructureTriangles(polonixService);
         Stopwatch timer = Stopwatch.createUnstarted();
 
         timer.start();
@@ -26,7 +29,7 @@ public class TriangularArb {
         System.out.println(stop);
 
         ArbitrageCalculator arbitrageCalculator = new ArbitrageCalculator();
-        final Map<String, PairQuote> quotes = PolonixApiFacade.getPrices(true);
+        final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
         for(Triangle triangle : triangles) {
             final List<FullTriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500), new BigDecimal(0));
             for(FullTriArbTrade candate : candidates) {

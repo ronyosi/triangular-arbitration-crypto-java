@@ -14,41 +14,16 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 
-public class PolonixApiFacade {
+public class PolonixService {
+    final PoloniexApi poloniexApi;
 
-    public static Map<String, PairQuote> getPrices(boolean disableCache) {
-        String tickers = null;
+    public PolonixService(PoloniexApi poloniexApi) {
+        this.poloniexApi = poloniexApi;
+    }
 
-        if(!disableCache) {
-            try {
-                tickers = FileUtils.openFile("tickers.json");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (tickers != null) {
-                return mapPoloniexJsonToPairQuotes(tickers);
-            }
-        }
-
-        var client = HttpClient.newHttpClient();
-        var request = HttpRequest.newBuilder(
-                URI.create("https://poloniex.com/public?command=returnTicker"))
-                .header("accept", "application/json")
-                .build();
-
-        HttpResponse<String> response = null;
-        try {
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        FileUtils.writeFile(response.body(), "tickers.json");
-
-        return mapPoloniexJsonToPairQuotes(response.body());
+    public Map<String, PairQuote> getPricingInfo() {
+        final String json = poloniexApi.getPricesFromFileOrApiCall(false);
+        return mapPoloniexJsonToPairQuotes(json);
     }
 
     private static Map<String, PairQuote> mapPoloniexJsonToPairQuotes(String prices) {

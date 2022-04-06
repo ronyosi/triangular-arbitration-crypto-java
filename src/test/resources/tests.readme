@@ -1,0 +1,7 @@
+To simplify testing the tickers_for_3_trianges.json is added, which hs these three triangles
+15   [main] INFO  com.webhopper.business.ArbitrageCalculator  - REVERSE TRADES for USDT_TUSD => USDC_USDT => USDC_TUSD
+
+4013 [main] INFO  com.webhopper.business.ArbitrageCalculator  - FORWARD TRADES for BTC_MATIC => USDT_MATIC => USDT_BTC
+2218 [main] INFO  com.webhopper.business.ArbitrageCalculator  - REVERSE TRADES for USDC_LTC => USDC_USDT => USDT_LTC
+
+2 potentially profitable but needs to be checked via deep value check. One is not.

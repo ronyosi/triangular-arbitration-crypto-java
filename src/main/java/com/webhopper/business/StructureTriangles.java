@@ -3,7 +3,7 @@ package com.webhopper.business;
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
-import com.webhopper.poloniex.PolonixApiFacade;
+import com.webhopper.poloniex.PolonixService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,14 +12,18 @@ import java.util.*;
 public class StructureTriangles {
     private static final Logger logger = LoggerFactory.getLogger(StructureTriangles.class);
 
+    final PolonixService polonixService;
 
+    public StructureTriangles(final PolonixService polonixService) {
+        this.polonixService = polonixService;
+    }
 
 
 
     public List<Triangle> structure()  {
         final List<Triangle> result = new LinkedList<>();
         final Set<String> trianglesAlreadyFound = new HashSet<>();
-        final Map<String, PairQuote> pairQuotes = PolonixApiFacade.getPrices(false);
+        final Map<String, PairQuote> pairQuotes = polonixService.getPricingInfo();
 
         for(PairQuote pairA : pairQuotes.values()) {
             final String baseA = pairA.getBase();
