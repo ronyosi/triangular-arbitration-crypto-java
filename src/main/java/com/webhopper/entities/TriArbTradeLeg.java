@@ -89,18 +89,16 @@ public class TriArbTradeLeg {
 
     @Override
     public String toString() {
-        return "TriArbTrade{" +
-                "\namountIn=" + surfaceCalcAmountIn +
-                ",\n pair=" + pair +
-                ",\n pairTradeDirection=" + pairTradeDirection +
-                ",\n calculatedRate=" + swapRate +
-                ",\n amountOut=" + surfaceCalcAmountOut +
-                ",\n coinIn='" + coinIn + '\'' +
-                ",\n coinOut='" + coinOut + '\'' +
+        return "TriArbTradeLeg{" +
+                "\npair=" + pair +
+                "\n, pairTradeDirection=" + pairTradeDirection +
+                "\n, coinIn='" + coinIn + '\'' +
+                "\n, coinOut='" + coinOut + '\'' +
+                "\n, surfaceCalcAmountIn=" + surfaceCalcAmountIn +
+                "\n, surfaceCalcAmountOut=" + surfaceCalcAmountOut +
+                "\n, depthCalcAmountIn=" + depthCalcAmountIn +
+                "\n, depthCalcAmountOut=" + depthCalcAmountOut +
+                "\n, swapRate=" + swapRate +
                 '}';
-    }
-
-    enum CalculationType {
-        SURFACE, REAL
     }
 }

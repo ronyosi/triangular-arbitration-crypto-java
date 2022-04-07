@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 
 public class BookEntry {
     private final BigDecimal price;
-    private final int quantity;
+    private final BigDecimal quantity;
 
-    public BookEntry(BigDecimal price, int quantity) {
+    public BookEntry(BigDecimal price, BigDecimal quantity) {
         this.price = price;
         this.quantity = quantity;
     }
@@ -15,7 +15,7 @@ public class BookEntry {
         return price;
     }
 
-    public int getQuantity() {
+    public BigDecimal getQuantity() {
         return quantity;
     }
 }

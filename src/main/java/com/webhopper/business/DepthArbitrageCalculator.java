@@ -61,12 +61,7 @@ public class DepthArbitrageCalculator {
     triArbTrade.setDepthCalcProfit(profitLoss);
     triArbTrade.setDepthCalcProfitPercent(profitPercentage);
 
-    if (profitPercentage.doubleValue() > -1) {
-        return triArbTrade;
-    } else {
-        return null;
-    }
-
+    return triArbTrade;
    }
 
    private BigDecimal calculateDeepProfitablity(BigDecimal amountIn, List<BookEntry> orderBook) {
@@ -77,16 +72,16 @@ public class DepthArbitrageCalculator {
 
        for(BookEntry bookEntry : orderBook) {
            final BigDecimal levelPrice = bookEntry.getPrice();
-           final int levelAvailableQuantity = bookEntry.getQuantity();
+           final BigDecimal levelAvailableQuantity = bookEntry.getQuantity();
 
            BigDecimal amountBought = new BigDecimal(0);
-           if (tradingBalance.doubleValue() <= levelAvailableQuantity) {
+           if (tradingBalance.doubleValue() <= levelAvailableQuantity.doubleValue()) {
                quantityBought = tradingBalance;
                tradingBalance = new BigDecimal(0);
                amountBought = quantityBought.multiply(levelPrice);
 
-           } else if (tradingBalance.doubleValue() > levelAvailableQuantity) {
-               acquiredCoin = new BigDecimal(levelAvailableQuantity);
+           } else if (tradingBalance.doubleValue() > levelAvailableQuantity.doubleValue()) {
+               quantityBought = levelAvailableQuantity;
                tradingBalance = tradingBalance.subtract(quantityBought);
                amountBought = quantityBought.multiply(levelPrice);
            }
@@ -107,13 +102,36 @@ public class DepthArbitrageCalculator {
        return acquiredCoin;
    }
 
+   /*
+   def reformated_orderbook(prices, c_direction):
+    price_list_main = []
+    if c_direction == "base_to_quote":
+        for p in prices["asks"]:
+            ask_price = float(p[0])
+            adj_price = 1 / ask_price if ask_price != 0 else 0
+            adj_quantity = float(p[1]) * ask_price
+            price_list_main.append([adj_price, adj_quantity])
+    if c_direction == "quote_to_base":
+        for p in prices["bids"]:
+            bid_price = float(p[0])
+            adj_price = bid_price if bid_price != 0 else 0
+            adj_quantity = float(p[1])
+            price_list_main.append([adj_price, adj_quantity])
+    return price_list_main
+    */
    private  List<BookEntry> reformatOrderbook(OrderBook orderBook, PairTradeDirection direction) {
        final List<BookEntry> bookEntry = new ArrayList<>();
 
        if(direction == PairTradeDirection.BASE_TO_QUOTE) {
            for(BookEntry ask : orderBook.getAsks()) {
-               BigDecimal recalculatedPrice = new BigDecimal(1).divide(ask.getPrice(), 7, RoundingMode.HALF_UP);
-               bookEntry.add(new BookEntry(recalculatedPrice, ask.getQuantity()));
+               BigDecimal adjustedPrice = new BigDecimal(0);
+               BigDecimal adjustedQuantity = ask.getQuantity().multiply(ask.getPrice());
+               // If divide by zero issue will not happen, run the math below.
+               if(!ask.getPrice().equals(new BigDecimal(0))) {
+                   adjustedPrice = new BigDecimal(1).divide(ask.getPrice(), 7, RoundingMode.HALF_UP);
+               }
+
+               bookEntry.add(new BookEntry(adjustedPrice, adjustedQuantity));
            }
        } else if(direction == PairTradeDirection.QUOTE_TO_BASE) {
            for(BookEntry ask : orderBook.getBids()) {
@@ -125,3 +143,5 @@ public class DepthArbitrageCalculator {
        return bookEntry;
    }
 }
+
+

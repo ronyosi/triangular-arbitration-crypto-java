@@ -27,8 +27,8 @@ public class OrderBookDeserializer extends JsonDeserializer<OrderBook> {
         while(asksIterator.hasNext()) {
             final JsonNode nextTuple = asksIterator.next();
             double price = nextTuple.get(0).asDouble();
-            int quantity = nextTuple.get(1).asInt();
-            hydratedAsks.add(new BookEntry(new BigDecimal(price), quantity));
+            double quantity = nextTuple.get(1).asDouble();
+            hydratedAsks.add(new BookEntry(new BigDecimal(price), new BigDecimal(quantity)));
         }
 
         orderBook.setAsks(hydratedAsks);
@@ -41,8 +41,8 @@ public class OrderBookDeserializer extends JsonDeserializer<OrderBook> {
         while(bidsIterator.hasNext()) {
             final JsonNode nextTuple = bidsIterator.next();
             double price = nextTuple.get(0).asDouble();
-            int quantity = nextTuple.get(1).asInt();
-            hydratedBids.add(new BookEntry(new BigDecimal(price), quantity));
+            double quantity = nextTuple.get(1).asDouble();
+            hydratedBids.add(new BookEntry(new BigDecimal(price), new BigDecimal(quantity)));
         }
 
         orderBook.setBids(hydratedBids);
