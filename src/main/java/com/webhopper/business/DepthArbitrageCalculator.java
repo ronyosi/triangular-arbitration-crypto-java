@@ -24,7 +24,7 @@ public class DepthArbitrageCalculator {
 
     }
 
-   public Map<String, Object> calculateDepthArbitrage(final FullTriArbTrade triangle) {
+   public Map<String, Object> calculateDepthArbitrage(final TriArbTradeResults triangle) {
        final TriArbTradeLeg leg1 = triangle.getLeg1();
        final String pairA = leg1.getPair().getPair();
        final TriArbTradeLeg leg2 = triangle.getLeg2();
@@ -50,6 +50,19 @@ public class DepthArbitrageCalculator {
     double realRatePercent  = (profitLoss.doubleValue() / startingAmount.doubleValue()) * 100;
 
     if (realRatePercent > -1) {
+
+        /*
+               TriArbTradeLeg trade1Reverse = new TriArbTradeLeg();
+        trade1Reverse.setPairTradeDirection(PairTradeDirection.QUOTE_TO_BASE);
+        trade1Reverse.setPair(pairA);
+        trade1Reverse.setAmountIn(startingAmount);
+        trade1Reverse.setCoinIn(pairA.getQuote());
+        trade1Reverse.setCoinOut(pairA.getBase());
+        trade1Reverse.setSwapRate(pairAPricing.getBid());
+        trade1Reverse.setAmountOut(trade1Reverse.getSwapRate().multiply(startingAmount));
+         */
+
+//        TriArbTradeResults triArbTradeResults = new TriArbTradeResults();
         Map<String, Object> realRateInfo = new HashMap<>();
         realRateInfo.put("profit_loss", profitLoss);
         realRateInfo.put("real_rate_percent", realRatePercent);

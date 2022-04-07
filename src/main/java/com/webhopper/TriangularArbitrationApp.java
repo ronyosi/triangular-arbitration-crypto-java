@@ -4,7 +4,7 @@ import com.google.common.base.Stopwatch;
 import com.webhopper.business.DepthArbitrageCalculator;
 import com.webhopper.business.SurfaceArbitrageCalculator;
 import com.webhopper.business.StructureTriangles;
-import com.webhopper.entities.FullTriArbTrade;
+import com.webhopper.entities.TriArbTradeResults;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
 import com.webhopper.poloniex.PoloniexApi;
@@ -57,11 +57,11 @@ public class TriangularArbitrationApp {
         final DepthArbitrageCalculator realArbitrageCalculator = new DepthArbitrageCalculator(polonixService);
         final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
         for(Triangle triangle : triangles) {
-            final List<FullTriArbTrade> surfaceRateCalculations = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500));
+            final List<TriArbTradeResults> surfaceRateCalculations = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500));
 
-            final List<FullTriArbTrade> profitableSurfaceRates = surfaceRateCalculations.stream().filter(t -> t.getProfitPercent().doubleValue() > percentProfitExpected).collect(Collectors.toList());
+            final List<TriArbTradeResults> profitableSurfaceRates = surfaceRateCalculations.stream().filter(t -> t.getProfitPercent().doubleValue() > percentProfitExpected).collect(Collectors.toList());
 
-            for(FullTriArbTrade candidate : profitableSurfaceRates) {
+            for(TriArbTradeResults candidate : profitableSurfaceRates) {
                 logSurfaceRateInfo(candidate);
                 Map<String, Object> stringObjectMap = realArbitrageCalculator.calculateDepthArbitrage(candidate);
                 System.out.println(stringObjectMap);

@@ -53,7 +53,7 @@ public class PoloniexApi {
         return response.body();
     }
 
-    protected static String httpGetOrderBookForPair(String pair) {
+    public String httpGetOrderBookForPair(String pair) {
         var url = String.format("https://poloniex.com/public?command=returnOrderBook&currencyPair=%s&depth=20", pair);
 
         var client = HttpClient.newHttpClient();
