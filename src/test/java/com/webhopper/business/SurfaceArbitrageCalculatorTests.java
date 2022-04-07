@@ -1,6 +1,6 @@
 package com.webhopper.business;
 
-import com.webhopper.entities.TriArbTradeResults;
+import com.webhopper.entities.TriArbTrade;
 import com.webhopper.entities.PairTradeDirection;
 import com.webhopper.entities.TriArbTradeLeg;
 import com.webhopper.entities.Triangle;
@@ -52,10 +52,10 @@ public class SurfaceArbitrageCalculatorTests {
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
-        final List<TriArbTradeResults> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
+        final List<TriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
         Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
-        TriArbTradeResults fullTriArbTradeForward = candidates.get(0);
-        TriArbTradeResults fullTriArbTradeReverse = candidates.get(1);
+        TriArbTrade fullTriArbTradeForward = candidates.get(0);
+        TriArbTrade fullTriArbTradeReverse = candidates.get(1);
 
         verifyCalculations(quotes, fullTriArbTradeForward, BASE_TO_QUOTE, QUOTE_TO_BASE, BASE_TO_QUOTE);
         verifyCalculations(quotes, fullTriArbTradeReverse, QUOTE_TO_BASE, QUOTE_TO_BASE, BASE_TO_QUOTE);
@@ -72,10 +72,10 @@ public class SurfaceArbitrageCalculatorTests {
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
-        final List<TriArbTradeResults> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
+        final List<TriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
         Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
-        TriArbTradeResults fullTriArbTradeForward = candidates.get(0);
-        TriArbTradeResults fullTriArbTradeReverse = candidates.get(1);
+        TriArbTrade fullTriArbTradeForward = candidates.get(0);
+        TriArbTrade fullTriArbTradeReverse = candidates.get(1);
 
         verifyCalculations(quotes, fullTriArbTradeForward, BASE_TO_QUOTE, QUOTE_TO_BASE, BASE_TO_QUOTE);
         verifyCalculations(quotes, fullTriArbTradeReverse, QUOTE_TO_BASE, QUOTE_TO_BASE, BASE_TO_QUOTE);
@@ -87,7 +87,7 @@ public class SurfaceArbitrageCalculatorTests {
         Assert.assertEquals(leg3.getCoinOut(), leg1.getCoinIn());
     }
 
-    private void verifyCalculations(Map<String, PairQuote> quotes, TriArbTradeResults fullTriArbTrade,
+    private void verifyCalculations(Map<String, PairQuote> quotes, TriArbTrade fullTriArbTrade,
                                     PairTradeDirection leg1Direction, PairTradeDirection leg2Direction, PairTradeDirection leg3Direction) {
         TriArbTradeLeg leg1 = fullTriArbTrade.getLeg1();
         TriArbTradeLeg leg2 = fullTriArbTrade.getLeg2();

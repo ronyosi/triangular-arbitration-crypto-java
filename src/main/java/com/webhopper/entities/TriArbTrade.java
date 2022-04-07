@@ -2,7 +2,7 @@ package com.webhopper.entities;
 
 import java.math.BigDecimal;
 
-public class TriArbTradeResults {
+public class TriArbTrade {
     final TriArbTradeLeg leg1;
     final TriArbTradeLeg leg2;
     final TriArbTradeLeg leg3;
@@ -10,7 +10,7 @@ public class TriArbTradeResults {
     final BigDecimal profitPercent;
 
 
-    public TriArbTradeResults(TriArbTradeLeg leg1, TriArbTradeLeg leg2, TriArbTradeLeg leg3, BigDecimal profit, BigDecimal profitPercent) {
+    public TriArbTrade(TriArbTradeLeg leg1, TriArbTradeLeg leg2, TriArbTradeLeg leg3, BigDecimal profit, BigDecimal profitPercent) {
         this.leg1 = leg1;
         this.leg2 = leg2;
         this.leg3 = leg3;

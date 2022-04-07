@@ -24,7 +24,7 @@ public class DepthArbitrageCalculator {
 
     }
 
-   public Map<String, Object> calculateDepthArbitrage(final TriArbTradeResults triangle) {
+   public Map<String, Object> calculateDepthArbitrage(final TriArbTrade triangle) {
        final TriArbTradeLeg leg1 = triangle.getLeg1();
        final String pairA = leg1.getPair().getPair();
        final TriArbTradeLeg leg2 = triangle.getLeg2();
@@ -41,7 +41,9 @@ public class DepthArbitrageCalculator {
        final List<BookEntry> repriceForLeg3Calculation = reformatOrderbook(bookForPairC, leg3.getPairTradeDirection());
 
        final BigDecimal startingAmount = leg1.getAmountIn();
+
        final BigDecimal aquiredCoinLeg1 = calculateDeepProfitablity(startingAmount, repriceForLeg1Calculation);
+
        final BigDecimal aquiredCoinLeg2 = calculateDeepProfitablity(aquiredCoinLeg1, repriceForLeg2Calculation);
        final BigDecimal aquiredCoinLeg3 = calculateDeepProfitablity(aquiredCoinLeg2, repriceForLeg3Calculation);
 

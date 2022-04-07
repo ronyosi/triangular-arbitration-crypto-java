@@ -22,7 +22,7 @@ public class SurfaceArbitrageCalculator {
 
     }
 
-    public List<TriArbTradeResults> calculateSurfaceArbitrage(
+    public List<TriArbTrade> calculateSurfaceArbitrage(
             final Triangle triangle,
             final Map<String, PairQuote> quotes,
             final BigDecimal startingAmount) {
@@ -89,13 +89,13 @@ public class SurfaceArbitrageCalculator {
 
         completeSurfaceCalculation(quotes, reverse, reverseTriArbTrades);
 
-        final List<TriArbTradeResults> forwardAndReverseCalculations = new ArrayList<>();
+        final List<TriArbTrade> forwardAndReverseCalculations = new ArrayList<>();
 
         logger.info("FORWARD TRADES for {}", formatTradeText(forwardTriArbTrades));
-        final TriArbTradeResults forwardTrade = calculateAndAddProfitability(startingAmount, forwardTriArbTrades);
+        final TriArbTrade forwardTrade = calculateAndAddProfitability(startingAmount, forwardTriArbTrades);
         forwardAndReverseCalculations.add(forwardTrade);
         logger.info("REVERSE TRADES for {}", formatTradeText(reverseTriArbTrades));
-        final TriArbTradeResults reverseTrade = calculateAndAddProfitability(startingAmount, reverseTriArbTrades);
+        final TriArbTrade reverseTrade = calculateAndAddProfitability(startingAmount, reverseTriArbTrades);
         forwardAndReverseCalculations.add(reverseTrade);
         return forwardAndReverseCalculations;
     }
@@ -107,7 +107,7 @@ public class SurfaceArbitrageCalculator {
         return String.format("%s => %s => %s", leg1, leg2, leg3);
     }
 
-    private TriArbTradeResults calculateAndAddProfitability(
+    private TriArbTrade calculateAndAddProfitability(
             final BigDecimal amount,
             final List<TriArbTradeLeg> triArbTrades) {
 
@@ -120,10 +120,10 @@ public class SurfaceArbitrageCalculator {
         final BigDecimal divide = profit.divide(amount, 7, RoundingMode.HALF_UP);
         final BigDecimal profitPercentage = divide.multiply(new BigDecimal(100));
 
-        return new TriArbTradeResults(tradeA, tradeB, endTrade, profit, profitPercentage);
+        return new TriArbTrade(tradeA, tradeB, endTrade, profit, profitPercentage);
     }
 
-    public static void logSurfaceRateInfo(TriArbTradeResults fullTriArbTrade) {
+    public static void logSurfaceRateInfo(TriArbTrade fullTriArbTrade) {
 //    public static void logSurfaceRateInfo(TriArbTradeLeg tradeA, TriArbTradeLeg tradeB, TriArbTradeLeg endTrade, BigDecimal profit, BigDecimal profitPercentage) {
         logger.info("====== Trade A: ======\n");
         logger.info(fullTriArbTrade.getLeg1().toString());
