@@ -24,12 +24,12 @@ public class DepthArbitrageCalculator {
 
     }
 
-   public Map<String, Object> calculateDepthArbitrage(final TriArbTrade triangle) {
-       final TriArbTradeLeg leg1 = triangle.getLeg1();
+   public TriArbTrade calculateDepthArbitrage(final TriArbTrade triArbTrade) {
+       final TriArbTradeLeg leg1 = triArbTrade.getLeg1();
        final String pairA = leg1.getPair().getPair();
-       final TriArbTradeLeg leg2 = triangle.getLeg2();
+       final TriArbTradeLeg leg2 = triArbTrade.getLeg2();
        final String pairB = leg2.getPair().getPair();
-       final TriArbTradeLeg leg3 = triangle.getLeg3();
+       final TriArbTradeLeg leg3 = triArbTrade.getLeg3();
        final String pairC = leg3.getPair().getPair();
 
        final OrderBook bookForPairA = poloniexService.getBookForPair(pairA);
@@ -40,42 +40,29 @@ public class DepthArbitrageCalculator {
        final List<BookEntry> repriceForLeg2Calculation = reformatOrderbook(bookForPairB, leg2.getPairTradeDirection());
        final List<BookEntry> repriceForLeg3Calculation = reformatOrderbook(bookForPairC, leg3.getPairTradeDirection());
 
-       final BigDecimal startingAmount = leg1.getAmountIn();
+       final BigDecimal startingAmount = leg1.getSurfaceCalcAmountIn();
 
        final BigDecimal aquiredCoinLeg1 = calculateDeepProfitablity(startingAmount, repriceForLeg1Calculation);
-
+       leg1.setDepthCalcAmountOut(aquiredCoinLeg1);
+       leg2.setDepthCalcAmountIn(aquiredCoinLeg1);
        final BigDecimal aquiredCoinLeg2 = calculateDeepProfitablity(aquiredCoinLeg1, repriceForLeg2Calculation);
+
+       leg2.setDepthCalcAmountOut(aquiredCoinLeg2);
+       leg3.setDepthCalcAmountIn(aquiredCoinLeg2);
        final BigDecimal aquiredCoinLeg3 = calculateDeepProfitablity(aquiredCoinLeg2, repriceForLeg3Calculation);
+       leg3.setDepthCalcAmountOut(aquiredCoinLeg3);
 
     // Calculate Profit Loss Also Known As Real Rate
-    BigDecimal profitLoss = aquiredCoinLeg3.subtract(startingAmount);
-    double realRatePercent  = (profitLoss.doubleValue() / startingAmount.doubleValue()) * 100;
+    final BigDecimal profitLoss = aquiredCoinLeg3.subtract(startingAmount);
+    // Calculate profit %
+    final BigDecimal divide = profitLoss.divide(startingAmount, 7, RoundingMode.HALF_UP);
+    final BigDecimal profitPercentage = divide.multiply(new BigDecimal(100));
 
-    if (realRatePercent > -1) {
+    triArbTrade.setDepthCalcProfit(profitLoss);
+    triArbTrade.setDepthCalcProfitPercent(profitPercentage);
 
-        /*
-               TriArbTradeLeg trade1Reverse = new TriArbTradeLeg();
-        trade1Reverse.setPairTradeDirection(PairTradeDirection.QUOTE_TO_BASE);
-        trade1Reverse.setPair(pairA);
-        trade1Reverse.setAmountIn(startingAmount);
-        trade1Reverse.setCoinIn(pairA.getQuote());
-        trade1Reverse.setCoinOut(pairA.getBase());
-        trade1Reverse.setSwapRate(pairAPricing.getBid());
-        trade1Reverse.setAmountOut(trade1Reverse.getSwapRate().multiply(startingAmount));
-         */
-
-//        TriArbTradeResults triArbTradeResults = new TriArbTradeResults();
-        Map<String, Object> realRateInfo = new HashMap<>();
-        realRateInfo.put("profit_loss", profitLoss);
-        realRateInfo.put("real_rate_percent", realRatePercent);
-        realRateInfo.put("leg_1", leg1);
-        realRateInfo.put("leg_2", leg2);
-        realRateInfo.put("leg_3", leg3);
-        realRateInfo.put("leg_1_direction", leg1.getPairTradeDirection());
-        realRateInfo.put("leg_2_direction", leg2.getPairTradeDirection());
-        realRateInfo.put("leg_3_direction", leg3.getPairTradeDirection());
-
-        return realRateInfo;
+    if (profitPercentage.doubleValue() > -1) {
+        return triArbTrade;
     } else {
         return null;
     }

@@ -101,8 +101,8 @@ public class SurfaceArbitrageCalculatorTests {
         final BigDecimal expectedLeg1SwapRate = calculateExpectedSwapRate(leg1, quotes);
         Assert.assertEquals(calculatedLeg1SwapRate, expectedLeg1SwapRate);
 
-        final BigDecimal expectedLeg1CoinOut = calculatedLeg1SwapRate.multiply(leg1.getAmountIn());
-        Assert.assertEquals(expectedLeg1CoinOut, leg1.getAmountOut());
+        final BigDecimal expectedLeg1CoinOut = calculatedLeg1SwapRate.multiply(leg1.getSurfaceCalcAmountIn());
+        Assert.assertEquals(expectedLeg1CoinOut, leg1.getSurfaceCalcAmountOut());
 
         //Verify Leg2 calculation
         final BigDecimal calculatedLeg2SwapRate = leg2.getSwapRate();
@@ -110,8 +110,8 @@ public class SurfaceArbitrageCalculatorTests {
         final BigDecimal expectedLeg2SwapRate = calculateExpectedSwapRate(leg2, quotes);
         Assert.assertEquals(calculatedLeg2SwapRate, expectedLeg2SwapRate);
 
-        final BigDecimal expectedLeg2CoinOut = calculatedLeg2SwapRate.multiply(leg2.getAmountIn());
-        Assert.assertEquals(expectedLeg2CoinOut, leg2.getAmountOut());
+        final BigDecimal expectedLeg2CoinOut = calculatedLeg2SwapRate.multiply(leg2.getSurfaceCalcAmountIn());
+        Assert.assertEquals(expectedLeg2CoinOut, leg2.getSurfaceCalcAmountOut());
 
         //Verify Leg3 calculation
         final BigDecimal calculatedLeg3SwapRate = leg3.getSwapRate();
@@ -119,16 +119,16 @@ public class SurfaceArbitrageCalculatorTests {
         final BigDecimal expectedLeg3SwapRate = calculateExpectedSwapRate(leg3, quotes);
         Assert.assertEquals(calculatedLeg3SwapRate, expectedLeg3SwapRate);
 
-        final BigDecimal expectedLeg3CoinOut = calculatedLeg3SwapRate.multiply(leg3.getAmountIn());
-        Assert.assertEquals(expectedLeg3CoinOut, leg3.getAmountOut());
+        final BigDecimal expectedLeg3CoinOut = calculatedLeg3SwapRate.multiply(leg3.getSurfaceCalcAmountIn());
+        Assert.assertEquals(expectedLeg3CoinOut, leg3.getSurfaceCalcAmountOut());
 
         // Verify surface rate profit calculation.
-        final BigDecimal calculatedProfit = fullTriArbTrade.getProfit();
-        final BigDecimal expectedProfit = leg3.getAmountOut().subtract(leg1.getAmountIn());
+        final BigDecimal calculatedProfit = fullTriArbTrade.getSurfaceCalcProfit();
+        final BigDecimal expectedProfit = leg3.getSurfaceCalcAmountOut().subtract(leg1.getSurfaceCalcAmountIn());
         Assert.assertEquals(expectedProfit, calculatedProfit);
 
-        final BigDecimal expectedProfitPercent = calculatedProfit.divide(leg1.getAmountIn(), 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100.00));
-        Assert.assertEquals(expectedProfitPercent, fullTriArbTrade.getProfitPercent());
+        final BigDecimal expectedProfitPercent = calculatedProfit.divide(leg1.getSurfaceCalcAmountIn(), 7, RoundingMode.HALF_UP).multiply(new BigDecimal(100.00));
+        Assert.assertEquals(expectedProfitPercent, fullTriArbTrade.getSurfaceCalcProfitPercent());
     }
 
     private BigDecimal calculateExpectedSwapRate(final TriArbTradeLeg leg, final Map<String, PairQuote> quotes) {

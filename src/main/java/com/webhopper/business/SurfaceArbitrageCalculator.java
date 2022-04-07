@@ -65,11 +65,11 @@ public class SurfaceArbitrageCalculator {
         TriArbTradeLeg trade1Forward = new TriArbTradeLeg();
         trade1Forward.setPairTradeDirection(PairTradeDirection.BASE_TO_QUOTE);
         trade1Forward.setPair(pairA);
-        trade1Forward.setAmountIn(startingAmount);
+        trade1Forward.setSurfaceCalcAmountIn(startingAmount);
         trade1Forward.setCoinIn(pairA.getBase());
         trade1Forward.setCoinOut(pairA.getQuote());
-        trade1Forward.setSwapRate(new BigDecimal(1.0).divide(pairAPricing.getAsk(),7, RoundingMode.HALF_UP));
-        trade1Forward.setAmountOut(trade1Forward.getSwapRate().multiply(startingAmount));
+        trade1Forward.setSurfaceCalcSwapRate(new BigDecimal(1.0).divide(pairAPricing.getAsk(),7, RoundingMode.HALF_UP));
+        trade1Forward.setSurfaceCalcAmountOut(trade1Forward.getSwapRate().multiply(startingAmount));
         forwardTriArbTrades.add(trade1Forward);
 
         completeSurfaceCalculation(quotes, forward, forwardTriArbTrades);
@@ -80,11 +80,11 @@ public class SurfaceArbitrageCalculator {
         TriArbTradeLeg trade1Reverse = new TriArbTradeLeg();
         trade1Reverse.setPairTradeDirection(PairTradeDirection.QUOTE_TO_BASE);
         trade1Reverse.setPair(pairA);
-        trade1Reverse.setAmountIn(startingAmount);
+        trade1Reverse.setSurfaceCalcAmountIn(startingAmount);
         trade1Reverse.setCoinIn(pairA.getQuote());
         trade1Reverse.setCoinOut(pairA.getBase());
-        trade1Reverse.setSwapRate(pairAPricing.getBid());
-        trade1Reverse.setAmountOut(trade1Reverse.getSwapRate().multiply(startingAmount));
+        trade1Reverse.setSurfaceCalcSwapRate(pairAPricing.getBid());
+        trade1Reverse.setSurfaceCalcAmountOut(trade1Reverse.getSwapRate().multiply(startingAmount));
         reverseTriArbTrades.add(trade1Reverse);
 
         completeSurfaceCalculation(quotes, reverse, reverseTriArbTrades);
@@ -114,7 +114,7 @@ public class SurfaceArbitrageCalculator {
         final TriArbTradeLeg tradeA = triArbTrades.get(0);
         final TriArbTradeLeg tradeB = triArbTrades.get(1);
         final TriArbTradeLeg endTrade = triArbTrades.get(2);
-        final BigDecimal profit = endTrade.getAmountOut().subtract(amount);
+        final BigDecimal profit = endTrade.getSurfaceCalcAmountOut().subtract(amount);
 
         // Calculate profit %
         final BigDecimal divide = profit.divide(amount, 7, RoundingMode.HALF_UP);
@@ -133,8 +133,8 @@ public class SurfaceArbitrageCalculator {
         logger.info("====== Trade C ======\n");
         logger.info(fullTriArbTrade.getLeg3().toString());
 
-        logger.info("Profit: {} ", fullTriArbTrade.getProfit());
-        logger.info("Profit Percentage: {}%", fullTriArbTrade.getProfitPercent());
+        logger.info("Profit: {} ", fullTriArbTrade.getSurfaceCalcProfit());
+        logger.info("Profit Percentage: {}%", fullTriArbTrade.getSurfaceCalcProfitPercent());
     }
 
     private void completeSurfaceCalculation(Map<String, PairQuote> quotes, List<Pair> forward, List<TriArbTradeLeg> triArbTrades) {
@@ -145,20 +145,20 @@ public class SurfaceArbitrageCalculator {
 
             final TriArbTradeLeg trade = new TriArbTradeLeg();
             trade.setPair(nextPair);
-            trade.setAmountIn(previousTrade.getAmountOut());
             trade.setCoinIn(previousTrade.getCoinOut());
+            trade.setSurfaceCalcAmountIn(previousTrade.getSurfaceCalcAmountOut());
 
             if(previousTrade.getCoinOut().equals(nextPair.getBase())) {
                 trade.setPairTradeDirection(PairTradeDirection.BASE_TO_QUOTE);
                 trade.setCoinOut(nextPair.getQuote());
-                trade.setSwapRate(new BigDecimal(1.0).divide(nextPairPricing.getAsk(),7, RoundingMode.HALF_UP));
+                trade.setSurfaceCalcSwapRate(new BigDecimal(1.0).divide(nextPairPricing.getAsk(),7, RoundingMode.HALF_UP));
             } else if(previousTrade.getCoinOut().equals(nextPair.getQuote())) {
                 trade.setPairTradeDirection(PairTradeDirection.QUOTE_TO_BASE);
                 trade.setCoinOut(nextPair.getBase());
-                trade.setSwapRate(nextPairPricing.getBid());
+                trade.setSurfaceCalcSwapRate(nextPairPricing.getBid());
             }
 
-            trade.setAmountOut(trade.getSwapRate().multiply(previousTrade.getAmountOut()));
+            trade.setSurfaceCalcAmountOut(trade.getSwapRate().multiply(previousTrade.getSurfaceCalcAmountOut()));
             triArbTrades.add(trade);
         }
     }

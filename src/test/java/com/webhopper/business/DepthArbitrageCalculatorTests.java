@@ -61,7 +61,7 @@ public class DepthArbitrageCalculatorTests {
         mockOrderBookCallForPair(triangle.getC().getPair());
 
         //todo: try to refactor depthArbitrageCalculator to not need the surfaceArbitrage result object.
-        Map<String, Object> stringObjectMap = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeForward);
+        TriArbTrade stringObjectMap = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeForward);
 
     }
 

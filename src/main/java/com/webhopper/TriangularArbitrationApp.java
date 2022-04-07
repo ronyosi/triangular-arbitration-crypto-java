@@ -59,12 +59,12 @@ public class TriangularArbitrationApp {
         for(Triangle triangle : triangles) {
             final List<TriArbTrade> surfaceRateCalculations = arbitrageCalculator.calculateSurfaceArbitrage(triangle, quotes, new BigDecimal(500));
 
-            final List<TriArbTrade> profitableSurfaceRates = surfaceRateCalculations.stream().filter(t -> t.getProfitPercent().doubleValue() > percentProfitExpected).collect(Collectors.toList());
+            final List<TriArbTrade> profitableSurfaceRates = surfaceRateCalculations.stream().filter(t -> t.getSurfaceCalcProfitPercent().doubleValue() > percentProfitExpected).collect(Collectors.toList());
 
             for(TriArbTrade candidate : profitableSurfaceRates) {
                 logSurfaceRateInfo(candidate);
-                Map<String, Object> stringObjectMap = realArbitrageCalculator.calculateDepthArbitrage(candidate);
-                System.out.println(stringObjectMap);
+                TriArbTrade triArbTrade = realArbitrageCalculator.calculateDepthArbitrage(candidate);
+                System.out.println(triArbTrade);
 
             }
         }
