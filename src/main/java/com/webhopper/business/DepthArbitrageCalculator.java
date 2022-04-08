@@ -40,6 +40,7 @@ public class DepthArbitrageCalculator {
         final List<BookEntry> repriceForLeg3Calculation = reformatOrderbook(bookForLeg3Pair, leg3.getPairTradeDirection());
 
         final BigDecimal startingAmount = leg1.getSurfaceCalcAmountIn();
+        leg1.setDepthCalcAmountIn(startingAmount);
 
         // Calculate leg1
         final RealArbCalcResult leg1Result = calculateDeepProfitablity(startingAmount, repriceForLeg1Calculation);

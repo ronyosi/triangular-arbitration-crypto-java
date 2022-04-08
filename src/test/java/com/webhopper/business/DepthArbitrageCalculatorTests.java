@@ -1,6 +1,8 @@
 package com.webhopper.business;
 
+import com.webhopper.entities.DepthCalcState;
 import com.webhopper.entities.TriArbTrade;
+import com.webhopper.entities.TriArbTradeLeg;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PairQuote;
 import com.webhopper.poloniex.PoloniexApi;
@@ -60,10 +62,24 @@ public class DepthArbitrageCalculatorTests {
         mockOrderBookCallForPair(triangle.getB().getPair());
         mockOrderBookCallForPair(triangle.getC().getPair());
 
-        TriArbTrade triArbTrade = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeForward);
-        System.out.println();
+        TriArbTrade triArbTradeForward = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeForward);
+        Assert.assertEquals(DepthCalcState.NOT_ENOUGH_BOOK_DEPTH, triArbTradeForward.getDepthCalcState());
 
+        TriArbTrade triArbTradeReverse = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeReverse);
+        Assert.assertEquals(DepthCalcState.SUCCESSFULLY_CALCULATED, triArbTradeReverse.getDepthCalcState());
 
+        TriArbTradeLeg leg1 = triArbTradeReverse.getLeg1();
+        TriArbTradeLeg leg2 = triArbTradeReverse.getLeg2();
+        TriArbTradeLeg leg3 = triArbTradeReverse.getLeg3();
+        Assert.assertEquals(500.0,leg1.getDepthCalcAmountIn().doubleValue(), 0.0001);
+        Assert.assertEquals(0.016935,leg1.getDepthCalcAmountOut().doubleValue(), 0.0001);
+        Assert.assertEquals(0.016935,leg2.getDepthCalcAmountIn().doubleValue(), 0.0001);
+        Assert.assertEquals(732.076578722536,leg2.getDepthCalcAmountOut().doubleValue(), 0.0001);
+        Assert.assertEquals(732.076578722536,leg3.getDepthCalcAmountIn().doubleValue(), 0.0001);
+        Assert.assertEquals(498.5597522477581,leg3.getDepthCalcAmountOut().doubleValue(), 0.0001);
+
+        Assert.assertEquals(-1.4402, triArbTradeReverse.getDepthCalcProfit().doubleValue(), .0001);
+        Assert.assertEquals(-0.2880500, triArbTradeReverse.getDepthCalcProfitPercent().doubleValue(), .0001);
     }
 
     private void mockOrderBookCallForPair(String pairName) throws IOException {
