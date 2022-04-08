@@ -22,6 +22,7 @@ dependencies {
     testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.4.0'
     testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
-
+//    web3
+    implementation group: 'org.web3j', name: 'core', version: '4.9.1'
 
 }

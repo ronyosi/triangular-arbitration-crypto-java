@@ -3,16 +3,12 @@ package com.webhopper.poloniex;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webhopper.utils.FileUtils;
 import com.webhopper.utils.JsonFacade;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class PolonixService {
     final PoloniexApi poloniexApi;
@@ -24,6 +20,25 @@ public class PolonixService {
     public Map<String, PairQuote> getPricingInfo() {
         final String json = poloniexApi.getPricesFromFileOrApiCall(false);
         return mapPoloniexJsonToPairQuotes(json);
+    }
+
+    public OrderBook getBookForPair(String pair) {
+        String json = poloniexApi.httpGetOrderBookForPair(pair);
+        return  mapPoloniexBookJson(json);
+
+    }
+
+    private OrderBook mapPoloniexBookJson(String json) {
+        final ObjectMapper objectMapper = JsonFacade.getObjectMapper();
+
+        OrderBook orderBook = null; // deserializes json into target2
+        try {
+            orderBook = objectMapper.readValue(json, OrderBook.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        return orderBook;
     }
 
     private static Map<String, PairQuote> mapPoloniexJsonToPairQuotes(String prices) {

@@ -1,0 +1,44 @@
+{
+  "BTC_LTC": {
+    "id": 50,
+    "last": "0.00259340",
+    "lowestAsk": "0.00259340",
+    "highestBid": "0.00258906",
+    "percentChange": "-0.03984420",
+    "baseVolume": "50.02328327",
+    "quoteVolume": "18955.56219670",
+    "isFrozen": "0",
+    "postOnly": "0",
+    "marginTradingEnabled": "1",
+    "high24hr": "0.00270629",
+    "low24hr": "0.00258422"
+  },
+  "USDT_LTC": {
+    "id": 123,
+    "last": "111.79767446",
+    "lowestAsk": "112.14246927",
+    "highestBid": "111.82390631",
+    "percentChange": "-0.09107331",
+    "baseVolume": "449800.64350328",
+    "quoteVolume": "3841.75578381",
+    "isFrozen": "0",
+    "postOnly": "0",
+    "marginTradingEnabled": "0",
+    "high24hr": "123.00161982",
+    "low24hr": "111.53752204"
+  },
+  "USDT_BTC": {
+    "id": 121,
+    "last": "43170.17704413",
+    "lowestAsk": "43170.17704414",
+    "highestBid": "43143.33838411",
+    "percentChange": "-0.05071449",
+    "baseVolume": "13983111.95638265",
+    "quoteVolume": "315.50970886",
+    "isFrozen": "0",
+    "postOnly": "0",
+    "marginTradingEnabled": "1",
+    "high24hr": "45551.77327065",
+    "low24hr": "43134.62586499"
+  }
+}

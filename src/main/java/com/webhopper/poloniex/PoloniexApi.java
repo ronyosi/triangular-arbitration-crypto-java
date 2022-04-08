@@ -1,6 +1,9 @@
 package com.webhopper.poloniex;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webhopper.utils.FileUtils;
+import com.webhopper.utils.JsonFacade;
 
 import java.io.IOException;
 import java.net.URI;
@@ -49,4 +52,27 @@ public class PoloniexApi {
         }
         return response.body();
     }
+
+    public String httpGetOrderBookForPair(String pair) {
+        var url = String.format("https://poloniex.com/public?command=returnOrderBook&currencyPair=%s&depth=20", pair);
+
+        var client = HttpClient.newHttpClient();
+        var request = HttpRequest.newBuilder(
+                URI.create(url))
+                .header("accept", "application/json")
+                .build();
+
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return response.body();
+    }
+
+
 }

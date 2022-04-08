@@ -7,19 +7,36 @@ public class TriArbTradeLeg {
     private PairTradeDirection pairTradeDirection;
 
     private String coinIn;
-    private BigDecimal amountIn;
+    private String coinOut;
+    private BigDecimal surfaceCalcAmountIn;
+    private BigDecimal surfaceCalcAmountOut;
+    private BigDecimal depthCalcAmountIn;
+    private BigDecimal depthCalcAmountOut;
 
     private BigDecimal swapRate;
 
-    private String coinOut;
-    private BigDecimal amountOut;
-
-    public BigDecimal getAmountIn() {
-        return amountIn;
+    public BigDecimal getSurfaceCalcAmountIn() {
+        return surfaceCalcAmountIn;
     }
 
-    public void setAmountIn(BigDecimal amountIn) {
-        this.amountIn = amountIn;
+    public void setSurfaceCalcAmountIn(BigDecimal surfaceCalculationAmountIn) {
+        this.surfaceCalcAmountIn = surfaceCalculationAmountIn;
+    }
+
+    public BigDecimal getDepthCalcAmountIn() {
+        return depthCalcAmountIn;
+    }
+
+    public void setDepthCalcAmountIn(BigDecimal depthCalcAmountIn) {
+        this.depthCalcAmountIn = depthCalcAmountIn;
+    }
+
+    public BigDecimal getDepthCalcAmountOut() {
+        return depthCalcAmountOut;
+    }
+
+    public void setDepthCalcAmountOut(BigDecimal depthCalcAmountOut) {
+        this.depthCalcAmountOut = depthCalcAmountOut;
     }
 
     public Pair getPair() {
@@ -42,16 +59,16 @@ public class TriArbTradeLeg {
         return swapRate;
     }
 
-    public void setSwapRate(BigDecimal calculatedRate) {
+    public void setSurfaceCalcSwapRate(BigDecimal calculatedRate) {
         this.swapRate = calculatedRate;
     }
 
-    public BigDecimal getAmountOut() {
-        return amountOut;
+    public BigDecimal getSurfaceCalcAmountOut() {
+        return surfaceCalcAmountOut;
     }
 
-    public void setAmountOut(BigDecimal amountOut) {
-        this.amountOut = amountOut;
+    public void setSurfaceCalcAmountOut(BigDecimal surfaceCalcAmountOut) {
+        this.surfaceCalcAmountOut = surfaceCalcAmountOut;
     }
 
     public String getCoinIn() {
@@ -72,14 +89,16 @@ public class TriArbTradeLeg {
 
     @Override
     public String toString() {
-        return "TriArbTrade{" +
-                "\namountIn=" + amountIn +
-                ",\n pair=" + pair +
-                ",\n pairTradeDirection=" + pairTradeDirection +
-                ",\n calculatedRate=" + swapRate +
-                ",\n amountOut=" + amountOut +
-                ",\n coinIn='" + coinIn + '\'' +
-                ",\n coinOut='" + coinOut + '\'' +
+        return "TriArbTradeLeg{" +
+                "\npair=" + pair +
+                "\n, pairTradeDirection=" + pairTradeDirection +
+                "\n, coinIn='" + coinIn + '\'' +
+                "\n, coinOut='" + coinOut + '\'' +
+                "\n, surfaceCalcAmountIn=" + surfaceCalcAmountIn +
+                "\n, surfaceCalcAmountOut=" + surfaceCalcAmountOut +
+                "\n, depthCalcAmountIn=" + depthCalcAmountIn +
+                "\n, depthCalcAmountOut=" + depthCalcAmountOut +
+                "\n, swapRate=" + swapRate +
                 '}';
     }
 }
