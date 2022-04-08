@@ -119,23 +119,6 @@ public class DepthArbitrageCalculator {
         return new RealArbCalcResult(RealArbCalcState.TRADING_BALANCE_SPENT, acquiredCoin);
     }
 
-    /*
-    def reformated_orderbook(prices, c_direction):
-     price_list_main = []
-     if c_direction == "base_to_quote":
-         for p in prices["asks"]:
-             ask_price = float(p[0])
-             adj_price = 1 / ask_price if ask_price != 0 else 0
-             adj_quantity = float(p[1]) * ask_price
-             price_list_main.append([adj_price, adj_quantity])
-     if c_direction == "quote_to_base":
-         for p in prices["bids"]:
-             bid_price = float(p[0])
-             adj_price = bid_price if bid_price != 0 else 0
-             adj_quantity = float(p[1])
-             price_list_main.append([adj_price, adj_quantity])
-     return price_list_main
-     */
     private List<BookEntry> reformatOrderbook(OrderBook orderBook, PairTradeDirection direction) {
         final List<BookEntry> bookEntry = new ArrayList<>();
 
@@ -158,9 +141,6 @@ public class DepthArbitrageCalculator {
 
         return bookEntry;
     }
-
-    
-
 }
 
 

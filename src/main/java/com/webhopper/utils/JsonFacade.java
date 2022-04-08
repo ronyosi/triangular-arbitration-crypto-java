@@ -9,7 +9,6 @@ public class JsonFacade {
     private static ObjectMapper objectMapper;
 
     public static ObjectMapper getObjectMapper() {
-
         if(objectMapper != null) {
             return objectMapper;
         }
@@ -17,10 +16,8 @@ public class JsonFacade {
         objectMapper = new ObjectMapper();
         SimpleModule module = new SimpleModule();
         module.addDeserializer(OrderBook.class, new OrderBookDeserializer());
-//        module.addSerializer(AutomationTaskSignal.class, new AutomationTaskSignalJsonSerializer());
         objectMapper.registerModule(module);
 
         return objectMapper;
     }
-
 }
