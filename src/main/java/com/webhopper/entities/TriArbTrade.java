@@ -10,6 +10,7 @@ public class TriArbTrade {
     private final BigDecimal surfaceCalcProfitPercent;
     private BigDecimal depthCalcProfit;
     private BigDecimal depthCalcProfitPercent;
+    private DepthCalcState depthCalcState;
 
     public TriArbTrade(TriArbTradeLeg leg1, TriArbTradeLeg leg2, TriArbTradeLeg leg3, BigDecimal surfaceCalcprofit, BigDecimal profitPercent) {
         this.leg1 = leg1;
@@ -55,25 +56,37 @@ public class TriArbTrade {
         this.depthCalcProfitPercent = depthCalcProfitPercent;
     }
 
+    public DepthCalcState getDepthCalcState() {
+        return depthCalcState;
+    }
+
+    public void setDepthCalcState(DepthCalcState depthCalcState) {
+        this.depthCalcState = depthCalcState;
+    }
+
     @Override
     public String toString() {
         return "TriArbTrade{" +
                 "\nleg1=" + leg1 +
-                "\n, leg2=" + leg2 +
-                "\n, leg3=" + leg3 +
-                "\n, surfaceCalcProfit=" + surfaceCalcProfit +
-                "\n, surfaceCalcProfitPercent=" + surfaceCalcProfitPercent +
-                "\n, depthCalcProfit=" + depthCalcProfit +
-                "\n, depthCalcProfitPercent=" + depthCalcProfitPercent +
+                "\nleg2=" + leg2 +
+                "\nleg3=" + leg3 +
+                "\nsurfaceCalcProfit=" + surfaceCalcProfit +
+                "\nsurfaceCalcProfitPercent=" + surfaceCalcProfitPercent +
+                "\ndepthCalcProfit=" + depthCalcProfit +
+                "\ndepthCalcProfitPercent=" + depthCalcProfitPercent +
                 '}';
     }
 
     public String prettyPrintTradeSummary() {
         return "============Trade details================:\n"
-                +   "\n "+ leg1.getPair().getPair() +"=>" + leg2.getPair().getPair()+"=>" + leg3.getPair().getPair()
-                +   "\n surfaceCalcProfit=" + surfaceCalcProfit
-                + "\n surfaceCalcProfitPercent=" + surfaceCalcProfitPercent
-                + "\n depthCalcProfit=" + depthCalcProfit
-                + "\n depthCalcProfitPercent=" + depthCalcProfitPercent;
+                + "\n Trade sequence: "+ leg1.getPair().getPair() +"=>" + leg2.getPair().getPair()+"=>" + leg3.getPair().getPair()
+                + "\n Amount in: " + leg1.getSurfaceCalcAmountIn() + " " +leg1.getCoinIn()
+                + "\n\n Surface Profit Calculations"
+                + "\n | surfaceCalcProfit=" + surfaceCalcProfit
+                + "\n | surfaceCalcProfitPercent=" + surfaceCalcProfitPercent
+                + "\n Depth Profit Calculations"
+                + "\n | depthCalcState=" + depthCalcState
+                + "\n | depthCalcProfit=" + depthCalcProfit
+                + "\n | depthCalcProfitPercent=" + depthCalcProfitPercent;
     }
 }

@@ -91,10 +91,10 @@ public class SurfaceArbitrageCalculator {
 
         final List<TriArbTrade> forwardAndReverseCalculations = new ArrayList<>();
 
-        logger.info("FORWARD TRADES for {}", formatTradeText(forwardTriArbTrades));
+        logger.debug("FORWARD TRADES for {}", formatTradeText(forwardTriArbTrades));
         final TriArbTrade forwardTrade = calculateAndAddProfitability(startingAmount, forwardTriArbTrades);
         forwardAndReverseCalculations.add(forwardTrade);
-        logger.info("REVERSE TRADES for {}", formatTradeText(reverseTriArbTrades));
+        logger.debug("REVERSE TRADES for {}", formatTradeText(reverseTriArbTrades));
         final TriArbTrade reverseTrade = calculateAndAddProfitability(startingAmount, reverseTriArbTrades);
         forwardAndReverseCalculations.add(reverseTrade);
         return forwardAndReverseCalculations;
@@ -125,16 +125,16 @@ public class SurfaceArbitrageCalculator {
 
     public static void logSurfaceRateInfo(TriArbTrade fullTriArbTrade) {
 //    public static void logSurfaceRateInfo(TriArbTradeLeg tradeA, TriArbTradeLeg tradeB, TriArbTradeLeg endTrade, BigDecimal profit, BigDecimal profitPercentage) {
-        logger.info("====== Trade A: ======\n");
-        logger.info(fullTriArbTrade.getLeg1().toString());
-        logger.info("====== Trade B ======\n");
+        logger.debug("====== Trade A: ======\n");
+        logger.debug(fullTriArbTrade.getLeg1().toString());
+        logger.debug("====== Trade B ======\n");
 
-        logger.info(fullTriArbTrade.getLeg2().toString());
-        logger.info("====== Trade C ======\n");
-        logger.info(fullTriArbTrade.getLeg3().toString());
+        logger.debug(fullTriArbTrade.getLeg2().toString());
+        logger.debug("====== Trade C ======\n");
+        logger.debug(fullTriArbTrade.getLeg3().toString());
 
-        logger.info("Profit: {} ", fullTriArbTrade.getSurfaceCalcProfit());
-        logger.info("Profit Percentage: {}%", fullTriArbTrade.getSurfaceCalcProfitPercent());
+        logger.debug("Profit: {} ", fullTriArbTrade.getSurfaceCalcProfit());
+        logger.debug("Profit Percentage: {}%", fullTriArbTrade.getSurfaceCalcProfitPercent());
     }
 
     private void completeSurfaceCalculation(Map<String, PairQuote> quotes, List<Pair> forward, List<TriArbTradeLeg> triArbTrades) {

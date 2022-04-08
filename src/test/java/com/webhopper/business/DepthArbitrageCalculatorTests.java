@@ -63,6 +63,7 @@ public class DepthArbitrageCalculatorTests {
         TriArbTrade triArbTrade = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeForward);
         System.out.println();
 
+
     }
 
     private void mockOrderBookCallForPair(String pairName) throws IOException {
