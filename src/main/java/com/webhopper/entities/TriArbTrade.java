@@ -54,4 +54,26 @@ public class TriArbTrade {
     public void setDepthCalcProfitPercent(BigDecimal depthCalcProfitPercent) {
         this.depthCalcProfitPercent = depthCalcProfitPercent;
     }
+
+    @Override
+    public String toString() {
+        return "TriArbTrade{" +
+                "\nleg1=" + leg1 +
+                "\n, leg2=" + leg2 +
+                "\n, leg3=" + leg3 +
+                "\n, surfaceCalcProfit=" + surfaceCalcProfit +
+                "\n, surfaceCalcProfitPercent=" + surfaceCalcProfitPercent +
+                "\n, depthCalcProfit=" + depthCalcProfit +
+                "\n, depthCalcProfitPercent=" + depthCalcProfitPercent +
+                '}';
+    }
+
+    public String prettyPrintTradeSummary() {
+        return "============Trade details================:\n"
+                +   "\n "+ leg1.getPair().getPair() +"=>" + leg2.getPair().getPair()+"=>" + leg3.getPair().getPair()
+                +   "\n surfaceCalcProfit=" + surfaceCalcProfit
+                + "\n surfaceCalcProfitPercent=" + surfaceCalcProfitPercent
+                + "\n depthCalcProfit=" + depthCalcProfit
+                + "\n depthCalcProfitPercent=" + depthCalcProfitPercent;
+    }
 }

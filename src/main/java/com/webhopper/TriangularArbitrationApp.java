@@ -64,8 +64,7 @@ public class TriangularArbitrationApp {
             for(TriArbTrade candidate : profitableSurfaceRates) {
                 logSurfaceRateInfo(candidate);
                 TriArbTrade triArbTrade = realArbitrageCalculator.calculateDepthArbitrage(candidate);
-                System.out.println(triArbTrade);
-
+                System.out.println(triArbTrade.prettyPrintTradeSummary());
             }
         }
     }
