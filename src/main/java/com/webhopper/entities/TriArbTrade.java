@@ -78,15 +78,17 @@ public class TriArbTrade {
     }
 
     public String prettyPrintTradeSummary() {
-        return "============Trade details================:\n"
+        return "\n============Trade details=============================\n"
                 + "\n Trade sequence: "+ leg1.getPair().getPair() +"=>" + leg2.getPair().getPair()+"=>" + leg3.getPair().getPair()
                 + "\n Amount in: " + leg1.getSurfaceCalcAmountIn() + " " +leg1.getCoinIn()
                 + "\n\n Surface Profit Calculations"
-                + "\n | surfaceCalcProfit=" + surfaceCalcProfit
-                + "\n | surfaceCalcProfitPercent=" + surfaceCalcProfitPercent
+                + "\n | surfaceCalcProfit=" + (surfaceCalcProfit != null ? surfaceCalcProfit.doubleValue() : null)
+                + "\n | surfaceCalcProfitPercent=" + (surfaceCalcProfit != null ? surfaceCalcProfitPercent.doubleValue() : null)
                 + "\n Depth Profit Calculations"
                 + "\n | depthCalcState=" + depthCalcState
-                + "\n | depthCalcProfit=" + depthCalcProfit
-                + "\n | depthCalcProfitPercent=" + depthCalcProfitPercent;
+                + (depthCalcState != DepthCalcState.SUCCESSFULLY_CALCULATED ? "" :
+                  "\n | depthCalcProfit=" + (depthCalcProfit != null ? depthCalcProfit.doubleValue(): null)
+                + "\n | depthCalcProfitPercent=" + (depthCalcProfit != null ? depthCalcProfitPercent.doubleValue() : null)
+                + "\n=====================================================\n");
     }
 }
