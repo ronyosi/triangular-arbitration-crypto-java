@@ -3,6 +3,8 @@ package com.webhopper.poloniex;
 
 import com.webhopper.business.ExchangeMarketDataService;
 import com.webhopper.business.StructureTriangles;
+import com.webhopper.uniswap.UniswapApi;
+import com.webhopper.uniswap.UniswapService;
 import com.webhopper.utils.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +27,11 @@ public class PoloniexTests {
     @Mock
     private PoloniexApi poloniexApi;
 
+    @Mock
+    private UniswapApi uniswapApi;
+
     private PolonixService polonixService;
+    private UniswapService uniswapService;
     private ExchangeMarketDataService exchangeMarketDataService;
 
     private StructureTriangles structureTriangles;
@@ -33,16 +39,24 @@ public class PoloniexTests {
     @Before
     public void setup() throws IOException {
         polonixService = new PolonixService(poloniexApi);
-        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, null);
+        uniswapService = new UniswapService(uniswapApi);
+        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, uniswapService);
         structureTriangles = new StructureTriangles(exchangeMarketDataService);
     }
 
-    //todo: add a test here for uniswap
     @Test
-    public void testJsonMappingReturnsCorrectKeys() throws IOException {
+    public void testPoloniexJsonMappingReturnsCorrectKeys() throws IOException {
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__tickers_for_3_triangles.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         final Map<String, Quote> pricingInfo = polonixService.getPricingInfo();
         assertThat(pricingInfo.keySet(), containsInAnyOrder("USDT_TUSD", "USDC_USDT", "USDC_TUSD", "BTC_MATIC", "USDT_MATIC", "USDT_BTC", "USDC_LTC", "USDT_LTC"));
+    }
+
+    @Test
+    public void testUniswapJsonMappingReturnsCorrectKeys() throws IOException {
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "uniswap__tickers_for_3_triangles.json");
+        when(uniswapApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
+        final Map<String, Quote> pricingInfo = uniswapService.getPricingInfo();
+        assertThat(pricingInfo.keySet(), containsInAnyOrder("UNI_RNG", "WBTC_USDC", "ICHI_CEL", "ICHI_USDC", "RNG_WETH", "USDC_CEL", "WBTC_ICHI", "UNI_WETH"));
     }
 }
