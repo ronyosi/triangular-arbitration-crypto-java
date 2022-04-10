@@ -41,7 +41,7 @@ public class SurfaceArbitrageCalculatorTests {
     @Test
     public void testProfitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
         // 1: Create triangles.
-        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "ticker_for_1_profitable_triangle.json");
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__ticker_for_1_profitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
 
@@ -61,7 +61,7 @@ public class SurfaceArbitrageCalculatorTests {
     @Test
     public void testUnprofitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
         // 1: Create triangles.
-        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "ticker_for_1_unprofitable_triangle.json");
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__ticker_for_1_unprofitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
 

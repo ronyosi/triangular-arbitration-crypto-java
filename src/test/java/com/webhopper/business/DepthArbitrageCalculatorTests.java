@@ -45,7 +45,7 @@ public class DepthArbitrageCalculatorTests {
     @Test
     public void testProfitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
         // 1: Create triangle.
-        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "ticker_for_1_unprofitable_triangle.json");
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__ticker_for_1_unprofitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
         final Triangle triangle = triangles.get(0);
@@ -84,7 +84,7 @@ public class DepthArbitrageCalculatorTests {
     }
 
     private void mockOrderBookCallForPair(String pairName) throws IOException {
-        final String fileName = pairName + "_order_book.json";
+        final String fileName = "poloniex__" + pairName + "_order_book.json";
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), fileName);
         when(poloniexApi.httpGetOrderBookForPair(eq(pairName))).thenReturn(json);
     }
