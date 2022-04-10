@@ -2,7 +2,6 @@ package com.webhopper.poloniex;
 
 
 import com.webhopper.business.StructureTriangles;
-import com.webhopper.entities.Triangle;
 import com.webhopper.utils.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,9 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.not;
@@ -42,7 +38,7 @@ public class PoloniexTests {
     public void testJsonMappingReturnsCorrectKeys() throws IOException {
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "tickers_for_3_triangles.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
-        final Map<String, PairQuote> pricingInfo = polonixService.getPricingInfo();
+        final Map<String, PoloniexQuote> pricingInfo = polonixService.getPricingInfo();
         assertThat(pricingInfo.keySet(), containsInAnyOrder("USDT_TUSD", "USDC_USDT", "USDC_TUSD", "BTC_MATIC", "USDT_MATIC", "USDT_BTC", "USDC_LTC", "USDT_LTC"));
     }
 }

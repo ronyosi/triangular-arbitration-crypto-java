@@ -1,20 +1,18 @@
 package com.webhopper.poloniex;
 
-import java.math.BigDecimal;
+import com.webhopper.entities.CryptoExchange;
 
-public class PairQuote {
+public class Quote {
     private String pair;
     private String base;
     private String quote;
-    private BigDecimal bid;
-    private BigDecimal ask;
+    private CryptoExchange cryptoExchange;
 
-    public PairQuote(String pair, String base, String quote, BigDecimal bid, BigDecimal ask) {
+    public Quote(String pair, String base, String quote, CryptoExchange cryptoExchange) {
         this.pair = pair;
         this.base = base;
         this.quote = quote;
-        this.bid = bid;
-        this.ask = ask;
+        this.cryptoExchange = cryptoExchange;
     }
 
     public String getPair() {
@@ -41,19 +39,11 @@ public class PairQuote {
         this.quote = quote;
     }
 
-    public BigDecimal getBid() {
-        return bid;
+    public CryptoExchange getCryptoExchange() {
+        return cryptoExchange;
     }
 
-    public void setBid(BigDecimal bid) {
-        this.bid = bid;
-    }
-
-    public BigDecimal getAsk() {
-        return ask;
-    }
-
-    public void setAsk(BigDecimal ask) {
-        this.ask = ask;
+    public void setCryptoExchange(CryptoExchange cryptoExchange) {
+        this.cryptoExchange = cryptoExchange;
     }
 }

@@ -7,7 +7,7 @@ import com.webhopper.business.StructureTriangles;
 import com.webhopper.entities.DepthCalcState;
 import com.webhopper.entities.TriArbTrade;
 import com.webhopper.entities.Triangle;
-import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PoloniexApi;
 import com.webhopper.poloniex.PolonixService;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public class TriangularArbitrationApp {
 
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
         final DepthArbitrageCalculator realArbitrageCalculator = new DepthArbitrageCalculator(polonixService);
-        final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
+        final Map<String, PoloniexQuote> quotes = polonixService.getPricingInfo();
         List<TriArbTrade> profitableTrianglesByRealRate = new ArrayList<>();
         List<TriArbTrade> profitableTrianglesBySurfaceRate = new ArrayList<>();
 

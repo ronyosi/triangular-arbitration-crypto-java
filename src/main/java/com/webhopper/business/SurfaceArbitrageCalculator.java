@@ -1,7 +1,7 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.*;
-import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PolonixService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +24,14 @@ public class SurfaceArbitrageCalculator {
 
     public List<TriArbTrade> calculateSurfaceArbitrage(
             final Triangle triangle,
-            final Map<String, PairQuote> quotes,
+            final Map<String, PoloniexQuote> quotes,
             final BigDecimal startingAmount) {
         // a is always the first pair whether we go in forward or reverse.
         final Pair pairA = triangle.getA();
         final Pair pairB = triangle.getB();
         final Pair pairC = triangle.getC();
 
-        final PairQuote pairAPricing = quotes.get(pairA.getPair());
+        final PoloniexQuote pairAPricing = quotes.get(pairA.getPair());
 
         // Setup forward and reverse lists
         List<Pair> forward = new ArrayList<>();
@@ -137,11 +137,11 @@ public class SurfaceArbitrageCalculator {
         logger.debug("Profit Percentage: {}%", fullTriArbTrade.getSurfaceCalcProfitPercent());
     }
 
-    private void completeSurfaceCalculation(Map<String, PairQuote> quotes, List<Pair> forward, List<TriArbTradeLeg> triArbTrades) {
+    private void completeSurfaceCalculation(Map<String, PoloniexQuote> quotes, List<Pair> forward, List<TriArbTradeLeg> triArbTrades) {
         for(int i = 1; i < forward.size(); i++) {
             final TriArbTradeLeg previousTrade = triArbTrades.get(i-1);
             final Pair nextPair = forward.get(i);
-            final PairQuote nextPairPricing = quotes.get(nextPair.getPair());
+            final PoloniexQuote nextPairPricing = quotes.get(nextPair.getPair());
 
             final TriArbTradeLeg trade = new TriArbTradeLeg();
             trade.setPair(nextPair);

@@ -2,8 +2,9 @@ package com.webhopper.business;
 
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
-import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PolonixService;
+import com.webhopper.poloniex.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +22,12 @@ public class StructureTriangles {
     public List<Triangle> structure()  {
         final List<Triangle> result = new LinkedList<>();
         final Set<String> trianglesAlreadyFound = new HashSet<>();
-        final Map<String, PairQuote> pairQuotes = polonixService.getPricingInfo();
+        final Map<String, PoloniexQuote> pairQuotes = polonixService.getPricingInfo();
 
-        for(PairQuote pairA : pairQuotes.values()) {
+        for(Quote pairA : pairQuotes.values()) {
             final String baseA = pairA.getBase();
             final String quoteA = pairA.getQuote();
-            for(PairQuote pairB : pairQuotes.values()) {
+            for(PoloniexQuote pairB : pairQuotes.values()) {
                 if (pairA.equals(pairB)) {
                     // skip bcs pairA should != pairB
                     continue;
@@ -38,7 +39,7 @@ public class StructureTriangles {
                     continue;
                 }
                 final Set<String> coinsToCompleteTriangle = findCoinsNeededToCompleteTriangle(baseA, quoteA, baseB, quoteB);
-                for(PairQuote pairC : pairQuotes.values()) {
+                for(Quote pairC : pairQuotes.values()) {
                     if (pairC.equals(pairA) || pairC.equals(pairB)) {
                         continue;
                     }

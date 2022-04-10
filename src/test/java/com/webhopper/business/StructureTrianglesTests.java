@@ -5,6 +5,7 @@ import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PoloniexApi;
 import com.webhopper.poloniex.PolonixService;
+import com.webhopper.uniswap.UniswapApi;
 import com.webhopper.utils.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,8 @@ import static org.mockito.Mockito.when;
 public class StructureTrianglesTests {
     @Mock
     private PoloniexApi poloniexApi;
+    @Mock
+    private UniswapApi uniswapApi;
 
     private PolonixService polonixService;
 
@@ -43,6 +46,22 @@ public class StructureTrianglesTests {
     public void testCorrectTrianglesFound() throws IOException {
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "tickers_for_3_triangles.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
+        List<Triangle> triangles = structureTriangles.structure();
+
+        assertEquals(3, triangles.size());
+
+        checkThatNoDuplicateTrianglesCreated(triangles);
+
+        for(Triangle triangle : triangles) {
+            checkThatTriangleIsCorrectlyFormed(triangle);
+        }
+
+    }
+
+    @Test
+    public void testCorrectUniswapTrianglesFound() throws IOException {
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "uniwswap_tickers.json");
+        when(uniswapApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure();
 
         assertEquals(3, triangles.size());

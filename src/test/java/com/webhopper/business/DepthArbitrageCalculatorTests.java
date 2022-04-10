@@ -4,9 +4,10 @@ import com.webhopper.entities.DepthCalcState;
 import com.webhopper.entities.TriArbTrade;
 import com.webhopper.entities.TriArbTradeLeg;
 import com.webhopper.entities.Triangle;
-import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PoloniexApi;
 import com.webhopper.poloniex.PolonixService;
+import com.webhopper.poloniex.Quote;
 import com.webhopper.utils.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,7 +50,7 @@ public class DepthArbitrageCalculatorTests {
         List<Triangle> triangles = structureTriangles.structure();
         final Triangle triangle = triangles.get(0);
 
-        final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
+        final Map<String, PoloniexQuote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);

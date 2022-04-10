@@ -3,7 +3,8 @@ package com.webhopper.uniswap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PoloniexQuote;
+import com.webhopper.poloniex.UniswapQuote;
 import com.webhopper.utils.JsonFacade;
 
 import java.math.BigDecimal;
@@ -20,17 +21,16 @@ public class UniswapService {
 
     public static void main(String[] args) {
         UniswapService uniswapService = new UniswapService(new UniswapApi());
-        Map<String, PairQuote> pricingInfo = uniswapService.getPricingInfo();
+        Map<String, UniswapQuote> pricingInfo = uniswapService.getPricingInfo();
         System.out.println();
     }
 
-    public Map<String, PairQuote> getPricingInfo() {
+    public Map<String, UniswapQuote> getPricingInfo() {
         final String json = uniswapApi.getPricesFromFileOrApiCall(false);
         return mapUniswapJsonToPairQuotes(json);
     }
 
-    private static Map<String, PairQuote> mapUniswapJsonToPairQuotes(String prices) {
-
+    private static Map<String, UniswapQuote> mapUniswapJsonToPairQuotes(String prices) {
         ObjectMapper objectMapper = JsonFacade.getObjectMapper();
         JsonNode priceData = null;
         try {
@@ -39,26 +39,21 @@ public class UniswapService {
             e.printStackTrace();
         }
 
-        Map<String, PairQuote> pairQuotes = new HashMap<>();
+        Map<String, UniswapQuote> pairQuotes = new HashMap<>();
+        final JsonNode liquidityPools = priceData.get("data").get("pools");
+        Iterator<JsonNode> iterator = liquidityPools.iterator();
+        while (iterator.hasNext()) {
+            final JsonNode poolEntry = iterator.next();
 
-        final Iterator<String> pairNames = priceData.fieldNames();
+            final JsonNode contractId = poolEntry.get("id");
+            String base = poolEntry.get("token0").get("symbol").asText();
+            String quote = poolEntry.get("token1").get("symbol").asText();
+            final String pair = base + "_" + quote;
 
-        while (pairNames.hasNext()) {
-            final String pair = pairNames.next();
-            JsonNode jsonNode = priceData.get(pair);
+            double token0Price = poolEntry.get("token0Price").asDouble();
+            double token1Price = poolEntry.get("token1Price").asDouble();
 
-            if(jsonNode.get("isFrozen").asInt() == 1 || jsonNode.get("postOnly").asInt() == 1) {
-                continue; //skip untradable coins.
-            }
-
-            String[] split = pair.split("_");
-            String base = split[0];
-            String quote = split[1];
-
-            double ask = jsonNode.get("lowestAsk").asDouble();
-            double bid = jsonNode.get("highestBid").asDouble();
-
-            pairQuotes.put(pair, new PairQuote(pair, base, quote, new BigDecimal(bid), new BigDecimal(ask)));
+            pairQuotes.put(pair, new UniswapQuote(pair, base, quote, new BigDecimal(token1Price), new BigDecimal(token0Price)));
         }
 
         return pairQuotes;

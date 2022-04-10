@@ -17,7 +17,7 @@ public class PolonixService {
         this.poloniexApi = poloniexApi;
     }
 
-    public Map<String, PairQuote> getPricingInfo() {
+    public Map<String, PoloniexQuote> getPricingInfo() {
         final String json = poloniexApi.getPricesFromFileOrApiCall(false);
         return mapPoloniexJsonToPairQuotes(json);
     }
@@ -41,7 +41,7 @@ public class PolonixService {
         return orderBook;
     }
 
-    private static Map<String, PairQuote> mapPoloniexJsonToPairQuotes(String prices) {
+    private static Map<String, PoloniexQuote> mapPoloniexJsonToPairQuotes(String prices) {
 
         ObjectMapper objectMapper = JsonFacade.getObjectMapper();
         JsonNode priceData = null;
@@ -51,7 +51,7 @@ public class PolonixService {
             e.printStackTrace();
         }
 
-        Map<String, PairQuote> pairQuotes = new HashMap<>();
+        Map<String, PoloniexQuote> pairQuotes = new HashMap<>();
 
         final Iterator<String> pairNames = priceData.fieldNames();
 
@@ -70,7 +70,7 @@ public class PolonixService {
             double ask = jsonNode.get("lowestAsk").asDouble();
             double bid = jsonNode.get("highestBid").asDouble();
 
-            pairQuotes.put(pair, new PairQuote(pair, base, quote, new BigDecimal(bid), new BigDecimal(ask)));
+            pairQuotes.put(pair, new PoloniexQuote(pair, base, quote, new BigDecimal(bid), new BigDecimal(ask)));
         }
 
         return pairQuotes;

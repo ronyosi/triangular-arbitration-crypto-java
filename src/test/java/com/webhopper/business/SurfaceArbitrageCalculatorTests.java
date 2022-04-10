@@ -4,7 +4,7 @@ import com.webhopper.entities.TriArbTrade;
 import com.webhopper.entities.PairTradeDirection;
 import com.webhopper.entities.TriArbTradeLeg;
 import com.webhopper.entities.Triangle;
-import com.webhopper.poloniex.PairQuote;
+import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PoloniexApi;
 import com.webhopper.poloniex.PolonixService;
 import com.webhopper.utils.FileUtils;
@@ -48,7 +48,7 @@ public class SurfaceArbitrageCalculatorTests {
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure();
 
-        final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
+        final Map<String, PoloniexQuote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
@@ -68,7 +68,7 @@ public class SurfaceArbitrageCalculatorTests {
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure();
 
-        final Map<String, PairQuote> quotes = polonixService.getPricingInfo();
+        final Map<String, PoloniexQuote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
@@ -87,7 +87,7 @@ public class SurfaceArbitrageCalculatorTests {
         Assert.assertEquals(leg3.getCoinOut(), leg1.getCoinIn());
     }
 
-    private void verifyCalculations(Map<String, PairQuote> quotes, TriArbTrade fullTriArbTrade,
+    private void verifyCalculations(Map<String, PoloniexQuote> quotes, TriArbTrade fullTriArbTrade,
                                     PairTradeDirection leg1Direction, PairTradeDirection leg2Direction, PairTradeDirection leg3Direction) {
         TriArbTradeLeg leg1 = fullTriArbTrade.getLeg1();
         TriArbTradeLeg leg2 = fullTriArbTrade.getLeg2();
@@ -131,8 +131,8 @@ public class SurfaceArbitrageCalculatorTests {
         Assert.assertEquals(expectedProfitPercent, fullTriArbTrade.getSurfaceCalcProfitPercent());
     }
 
-    private BigDecimal calculateExpectedSwapRate(final TriArbTradeLeg leg, final Map<String, PairQuote> quotes) {
-        final PairQuote quote = quotes.get(leg.getPair().getPair());
+    private BigDecimal calculateExpectedSwapRate(final TriArbTradeLeg leg, final Map<String, PoloniexQuote> quotes) {
+        final PoloniexQuote quote = quotes.get(leg.getPair().getPair());
 
         if(leg.getPairTradeDirection() == BASE_TO_QUOTE) {
             return new BigDecimal(1).divide(quote.getAsk(), 7, RoundingMode.HALF_UP);
