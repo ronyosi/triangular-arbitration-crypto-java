@@ -1,12 +1,7 @@
 package com.webhopper.business;
 
-import com.webhopper.entities.TriArbTrade;
-import com.webhopper.entities.PairTradeDirection;
-import com.webhopper.entities.TriArbTradeLeg;
-import com.webhopper.entities.Triangle;
-import com.webhopper.poloniex.PoloniexQuote;
-import com.webhopper.poloniex.PoloniexApi;
-import com.webhopper.poloniex.PolonixService;
+import com.webhopper.entities.*;
+import com.webhopper.poloniex.*;
 import com.webhopper.utils.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,13 +27,15 @@ public class SurfaceArbitrageCalculatorTests {
     private PoloniexApi poloniexApi;
 
     private PolonixService polonixService;
+    private ExchangeMarketDataService exchangeMarketDataService;
 
     private StructureTriangles structureTriangles;
 
     @Before
     public void setup() throws IOException {
         polonixService = new PolonixService(poloniexApi);
-        structureTriangles = new StructureTriangles(polonixService);
+        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, null);
+        structureTriangles = new StructureTriangles(exchangeMarketDataService);
     }
 
     @Test
@@ -46,9 +43,9 @@ public class SurfaceArbitrageCalculatorTests {
         // 1: Create triangles.
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "ticker_for_1_profitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
-        List<Triangle> triangles = structureTriangles.structure();
+        List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
 
-        final Map<String, PoloniexQuote> quotes = polonixService.getPricingInfo();
+        final Map<String, Quote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
@@ -66,9 +63,9 @@ public class SurfaceArbitrageCalculatorTests {
         // 1: Create triangles.
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "ticker_for_1_unprofitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
-        List<Triangle> triangles = structureTriangles.structure();
+        List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
 
-        final Map<String, PoloniexQuote> quotes = polonixService.getPricingInfo();
+        final Map<String, Quote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
@@ -87,7 +84,7 @@ public class SurfaceArbitrageCalculatorTests {
         Assert.assertEquals(leg3.getCoinOut(), leg1.getCoinIn());
     }
 
-    private void verifyCalculations(Map<String, PoloniexQuote> quotes, TriArbTrade fullTriArbTrade,
+    private void verifyCalculations(Map<String, Quote> quotes, TriArbTrade fullTriArbTrade,
                                     PairTradeDirection leg1Direction, PairTradeDirection leg2Direction, PairTradeDirection leg3Direction) {
         TriArbTradeLeg leg1 = fullTriArbTrade.getLeg1();
         TriArbTradeLeg leg2 = fullTriArbTrade.getLeg2();
@@ -131,13 +128,13 @@ public class SurfaceArbitrageCalculatorTests {
         Assert.assertEquals(expectedProfitPercent, fullTriArbTrade.getSurfaceCalcProfitPercent());
     }
 
-    private BigDecimal calculateExpectedSwapRate(final TriArbTradeLeg leg, final Map<String, PoloniexQuote> quotes) {
-        final PoloniexQuote quote = quotes.get(leg.getPair().getPair());
+    private BigDecimal calculateExpectedSwapRate(final TriArbTradeLeg leg, final Map<String, Quote> quotes) {
+        final Quote quote = quotes.get(leg.getPair().getPair());
 
         if(leg.getPairTradeDirection() == BASE_TO_QUOTE) {
-            return new BigDecimal(1).divide(quote.getAsk(), 7, RoundingMode.HALF_UP);
+            return new BigDecimal(1).divide(((PoloniexQuote)quote).getAsk(), 7, RoundingMode.HALF_UP);
         } else if(leg.getPairTradeDirection() == QUOTE_TO_BASE) {
-            return quote.getBid();
+            return ((PoloniexQuote)quote).getBid();
         } else {
             return null;
         }

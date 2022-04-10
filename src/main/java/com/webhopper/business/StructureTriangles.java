@@ -1,10 +1,12 @@
 package com.webhopper.business;
 
+import com.webhopper.entities.CryptoExchange;
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PolonixService;
 import com.webhopper.poloniex.Quote;
+import com.webhopper.uniswap.UniswapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,21 +15,21 @@ import java.util.*;
 public class StructureTriangles {
     private static final Logger logger = LoggerFactory.getLogger(StructureTriangles.class);
 
-    final PolonixService polonixService;
+    private final ExchangeMarketDataService exchangeMarketDataService;
 
-    public StructureTriangles(final PolonixService polonixService) {
-        this.polonixService = polonixService;
+    public StructureTriangles(final ExchangeMarketDataService exchangeMarketDataService) {
+        this.exchangeMarketDataService = exchangeMarketDataService;
     }
 
-    public List<Triangle> structure()  {
+    public List<Triangle> structure(CryptoExchange cryptoExchange)  {
         final List<Triangle> result = new LinkedList<>();
         final Set<String> trianglesAlreadyFound = new HashSet<>();
-        final Map<String, PoloniexQuote> pairQuotes = polonixService.getPricingInfo();
+        final Map<String, Quote> pairQuotes = exchangeMarketDataService.getPricingInfo(cryptoExchange);
 
         for(Quote pairA : pairQuotes.values()) {
             final String baseA = pairA.getBase();
             final String quoteA = pairA.getQuote();
-            for(PoloniexQuote pairB : pairQuotes.values()) {
+            for(Quote pairB : pairQuotes.values()) {
                 if (pairA.equals(pairB)) {
                     // skip bcs pairA should != pairB
                     continue;

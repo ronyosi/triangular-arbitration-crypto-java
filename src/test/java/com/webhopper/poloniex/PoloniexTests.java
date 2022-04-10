@@ -1,6 +1,7 @@
 package com.webhopper.poloniex;
 
 
+import com.webhopper.business.ExchangeMarketDataService;
 import com.webhopper.business.StructureTriangles;
 import com.webhopper.utils.FileUtils;
 import org.junit.Before;
@@ -25,20 +26,23 @@ public class PoloniexTests {
     private PoloniexApi poloniexApi;
 
     private PolonixService polonixService;
+    private ExchangeMarketDataService exchangeMarketDataService;
 
     private StructureTriangles structureTriangles;
 
     @Before
     public void setup() throws IOException {
         polonixService = new PolonixService(poloniexApi);
-        structureTriangles = new StructureTriangles(polonixService);
+        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, null);
+        structureTriangles = new StructureTriangles(exchangeMarketDataService);
     }
 
+    //todo: add a test here for uniswap
     @Test
     public void testJsonMappingReturnsCorrectKeys() throws IOException {
-        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "tickers_for_3_triangles.json");
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__tickers_for_3_triangles.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
-        final Map<String, PoloniexQuote> pricingInfo = polonixService.getPricingInfo();
+        final Map<String, Quote> pricingInfo = polonixService.getPricingInfo();
         assertThat(pricingInfo.keySet(), containsInAnyOrder("USDT_TUSD", "USDC_USDT", "USDC_TUSD", "BTC_MATIC", "USDT_MATIC", "USDT_BTC", "USDC_LTC", "USDT_LTC"));
     }
 }

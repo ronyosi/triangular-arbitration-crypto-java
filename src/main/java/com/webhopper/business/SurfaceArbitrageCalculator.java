@@ -3,6 +3,8 @@ package com.webhopper.business;
 import com.webhopper.entities.*;
 import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PolonixService;
+import com.webhopper.poloniex.Quote;
+import com.webhopper.poloniex.UniswapQuote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,14 +26,14 @@ public class SurfaceArbitrageCalculator {
 
     public List<TriArbTrade> calculateSurfaceArbitrage(
             final Triangle triangle,
-            final Map<String, PoloniexQuote> quotes,
+            final Map<String, Quote> quotes,
             final BigDecimal startingAmount) {
         // a is always the first pair whether we go in forward or reverse.
         final Pair pairA = triangle.getA();
         final Pair pairB = triangle.getB();
         final Pair pairC = triangle.getC();
 
-        final PoloniexQuote pairAPricing = quotes.get(pairA.getPair());
+        final Quote pairAPricing = quotes.get(pairA.getPair());
 
         // Setup forward and reverse lists
         List<Pair> forward = new ArrayList<>();
@@ -68,7 +70,7 @@ public class SurfaceArbitrageCalculator {
         trade1Forward.setSurfaceCalcAmountIn(startingAmount);
         trade1Forward.setCoinIn(pairA.getBase());
         trade1Forward.setCoinOut(pairA.getQuote());
-        trade1Forward.setSurfaceCalcSwapRate(new BigDecimal(1.0).divide(pairAPricing.getAsk(),7, RoundingMode.HALF_UP));
+        trade1Forward.setSurfaceCalcSwapRate(calculateBaseToQuote(pairAPricing));
         trade1Forward.setSurfaceCalcAmountOut(trade1Forward.getSwapRate().multiply(startingAmount));
         forwardTriArbTrades.add(trade1Forward);
 
@@ -83,7 +85,7 @@ public class SurfaceArbitrageCalculator {
         trade1Reverse.setSurfaceCalcAmountIn(startingAmount);
         trade1Reverse.setCoinIn(pairA.getQuote());
         trade1Reverse.setCoinOut(pairA.getBase());
-        trade1Reverse.setSurfaceCalcSwapRate(pairAPricing.getBid());
+        trade1Reverse.setSurfaceCalcSwapRate(calculateQuoteToBase(pairAPricing));
         trade1Reverse.setSurfaceCalcAmountOut(trade1Reverse.getSwapRate().multiply(startingAmount));
         reverseTriArbTrades.add(trade1Reverse);
 
@@ -137,11 +139,11 @@ public class SurfaceArbitrageCalculator {
         logger.debug("Profit Percentage: {}%", fullTriArbTrade.getSurfaceCalcProfitPercent());
     }
 
-    private void completeSurfaceCalculation(Map<String, PoloniexQuote> quotes, List<Pair> forward, List<TriArbTradeLeg> triArbTrades) {
+    private void completeSurfaceCalculation(Map<String, Quote> quotes, List<Pair> forward, List<TriArbTradeLeg> triArbTrades) {
         for(int i = 1; i < forward.size(); i++) {
             final TriArbTradeLeg previousTrade = triArbTrades.get(i-1);
             final Pair nextPair = forward.get(i);
-            final PoloniexQuote nextPairPricing = quotes.get(nextPair.getPair());
+            final Quote nextPairPricing = quotes.get(nextPair.getPair());
 
             final TriArbTradeLeg trade = new TriArbTradeLeg();
             trade.setPair(nextPair);
@@ -151,15 +153,35 @@ public class SurfaceArbitrageCalculator {
             if(previousTrade.getCoinOut().equals(nextPair.getBase())) {
                 trade.setPairTradeDirection(PairTradeDirection.BASE_TO_QUOTE);
                 trade.setCoinOut(nextPair.getQuote());
-                trade.setSurfaceCalcSwapRate(new BigDecimal(1.0).divide(nextPairPricing.getAsk(),7, RoundingMode.HALF_UP));
+                trade.setSurfaceCalcSwapRate(calculateBaseToQuote(nextPairPricing));
             } else if(previousTrade.getCoinOut().equals(nextPair.getQuote())) {
                 trade.setPairTradeDirection(PairTradeDirection.QUOTE_TO_BASE);
                 trade.setCoinOut(nextPair.getBase());
-                trade.setSurfaceCalcSwapRate(nextPairPricing.getBid());
+                trade.setSurfaceCalcSwapRate(calculateQuoteToBase(nextPairPricing));
             }
 
             trade.setSurfaceCalcAmountOut(trade.getSwapRate().multiply(previousTrade.getSurfaceCalcAmountOut()));
             triArbTrades.add(trade);
         }
+    }
+
+    private BigDecimal calculateQuoteToBase(Quote quote) {
+        if(quote.getCryptoExchange() == CryptoExchange.POLONIEX) {
+            return ((PoloniexQuote) quote).getBid();
+        } else if(quote.getCryptoExchange() == CryptoExchange.UNISWAP) {
+            return ((UniswapQuote) quote).getQuotePrice();
+        }
+
+        return null;
+    }
+
+    private BigDecimal calculateBaseToQuote(Quote quote) {
+        if(quote.getCryptoExchange() == CryptoExchange.POLONIEX) {
+            return new BigDecimal(1.0).divide(((PoloniexQuote) quote).getAsk(), 7, RoundingMode.HALF_UP);
+        } else if(quote.getCryptoExchange() == CryptoExchange.UNISWAP) {
+            return ((UniswapQuote) quote).getBasePrice();
+        }
+
+        return null;
     }
 }

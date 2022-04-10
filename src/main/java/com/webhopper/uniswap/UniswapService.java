@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webhopper.poloniex.PoloniexQuote;
+import com.webhopper.poloniex.Quote;
 import com.webhopper.poloniex.UniswapQuote;
 import com.webhopper.utils.JsonFacade;
 
@@ -21,16 +22,16 @@ public class UniswapService {
 
     public static void main(String[] args) {
         UniswapService uniswapService = new UniswapService(new UniswapApi());
-        Map<String, UniswapQuote> pricingInfo = uniswapService.getPricingInfo();
+        Map<String, Quote> pricingInfo = uniswapService.getPricingInfo();
         System.out.println();
     }
 
-    public Map<String, UniswapQuote> getPricingInfo() {
+    public Map<String, Quote> getPricingInfo() {
         final String json = uniswapApi.getPricesFromFileOrApiCall(false);
         return mapUniswapJsonToPairQuotes(json);
     }
 
-    private static Map<String, UniswapQuote> mapUniswapJsonToPairQuotes(String prices) {
+    private Map<String, Quote> mapUniswapJsonToPairQuotes(String prices) {
         ObjectMapper objectMapper = JsonFacade.getObjectMapper();
         JsonNode priceData = null;
         try {
@@ -39,7 +40,7 @@ public class UniswapService {
             e.printStackTrace();
         }
 
-        Map<String, UniswapQuote> pairQuotes = new HashMap<>();
+        Map<String, Quote> pairQuotes = new HashMap<>();
         final JsonNode liquidityPools = priceData.get("data").get("pools");
         Iterator<JsonNode> iterator = liquidityPools.iterator();
         while (iterator.hasNext()) {

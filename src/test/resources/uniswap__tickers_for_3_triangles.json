@@ -1,0 +1,182 @@
+{
+  "data": {
+    "pools": [
+      {
+        "id": "0x3778f73e949c98817a1f96c58121323754b429da",
+        "totalValueLockedETH": "202.0446497644557378730006029709416",
+        "token0Price": "0.001253122351029078013349503934090118",
+        "token1Price": "798.0066744311031375641779955912109",
+        "feeTier": "3000",
+        "token0": {
+          "id": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+          "symbol": "UNI",
+          "name": "Uniswap",
+          "decimals": "18"
+        },
+        "token1": {
+          "id": "0x3b94440c8c4f69d5c9f47bab9c5a93064df460f5",
+          "symbol": "RNG",
+          "name": "Ring.Exchange",
+          "decimals": "18"
+        }
+      },
+      {
+        "id": "0x9437ad40056ca3ec2fc1efe41885ad4b6ac46061",
+        "totalValueLockedETH": "846.7907052487766705967380104963738",
+        "token0Price": "260704.1812885924741456793757292623",
+        "token1Price": "0.000003835765099958358778915663334939322",
+        "feeTier": "3000",
+        "token0": {
+          "id": "0x3b94440c8c4f69d5c9f47bab9c5a93064df460f5",
+          "symbol": "RNG",
+          "name": "Ring.Exchange",
+          "decimals": "18"
+        },
+        "token1": {
+          "id": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "symbol": "WETH",
+          "name": "Wrapped Ether",
+          "decimals": "18"
+        }
+      },
+      {
+        "id": "0x360b9726186c0f62cc719450685ce70280774dc8",
+        "totalValueLockedETH": "179.130613244608388357455789505042",
+        "token0Price": "319.9307175514929496733486704951263",
+        "token1Price": "0.003125676732929058883807013866253079",
+        "feeTier": "10000",
+        "token0": {
+          "id": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+          "symbol": "UNI",
+          "name": "Uniswap",
+          "decimals": "18"
+        },
+        "token1": {
+          "id": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "symbol": "WETH",
+          "name": "Wrapped Ether",
+          "decimals": "18"
+        }
+      },
+
+      {
+        "id": "0x8ec83cb2ab2727ac16ab89d825535f7613c11e4e",
+        "totalValueLockedETH": "109.3970935404305710893854119328277",
+        "token0Price": "3.009354439085324333056517626875485",
+        "token1Price": "0.3322971820839901286756084048441233",
+        "feeTier": "3000",
+        "token0": {
+          "id": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "symbol": "USDC",
+          "name": "USD Coin",
+          "decimals": "6"
+        },
+        "token1": {
+          "id": "0xaaaebe6fe48e54f431b0c390cfaf0b017d09d42d",
+          "symbol": "CEL",
+          "name": "Celsius",
+          "decimals": "4"
+        }
+      },
+      {
+        "id": "0x2953faf0de9c32f5e36003163e0877f62e734c6e",
+        "totalValueLockedETH": "495.8601463884763991162966976686271",
+        "token0Price": "0.02234490503133436957048582784813052",
+        "token1Price": "44.75293131018883772224479951946372",
+        "feeTier": "3000",
+        "token0": {
+          "id": "0x903bef1736cddf2a537176cf3c64579c3867a881",
+          "symbol": "ICHI",
+          "name": "ichi.farm",
+          "decimals": "9"
+        },
+        "token1": {
+          "id": "0xaaaebe6fe48e54f431b0c390cfaf0b017d09d42d",
+          "symbol": "CEL",
+          "name": "Celsius",
+          "decimals": "4"
+        }
+      },
+      {
+        "id": "0xf2c055823dd744234694815c6c42f2956191ce1f",
+        "totalValueLockedETH": "1091.768576396603879459761146519968",
+        "token0Price": "0.007514941925038057276876989276092712",
+        "token1Price": "133.0682272697584134199765847562299",
+        "feeTier": "10000",
+        "token0": {
+          "id": "0x903bef1736cddf2a537176cf3c64579c3867a881",
+          "symbol": "ICHI",
+          "name": "ichi.farm",
+          "decimals": "9"
+        },
+        "token1": {
+          "id": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "symbol": "USDC",
+          "name": "USD Coin",
+          "decimals": "6"
+        }
+      },
+
+      {
+        "id": "0x6800c4e46091f9f3a100d1a97a892ef3db61954c",
+        "totalValueLockedETH": "3731.750302808984737006915080600088",
+        "token0Price": "0.003100523971533080078750447513779242",
+        "token1Price": "322.5261308028338235971497379227867",
+        "feeTier": "3000",
+        "token0": {
+          "id": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+          "symbol": "WBTC",
+          "name": "Wrapped BTC",
+          "decimals": "8"
+        },
+        "token1": {
+          "id": "0x903bef1736cddf2a537176cf3c64579c3867a881",
+          "symbol": "ICHI",
+          "name": "ichi.farm",
+          "decimals": "9"
+        }
+      },
+
+      {
+        "id": "0x99ac8ca7087fa4a2a1fb6357269965a2014abc35",
+        "totalValueLockedETH": "42832.89524255537719333527448518406",
+        "token0Price": "0.00002344147569083950362055535815163071",
+        "token1Price": "42659.43036985429878257285238767522",
+        "feeTier": "3000",
+        "token0": {
+          "id": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+          "symbol": "WBTC",
+          "name": "Wrapped BTC",
+          "decimals": "8"
+        },
+        "token1": {
+          "id": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "symbol": "USDC",
+          "name": "USD Coin",
+          "decimals": "6"
+        }
+      },
+
+      {
+        "id": "0xf2c055823dd744234694815c6c42f2956191ce1f",
+        "totalValueLockedETH": "1091.768576396603879459761146519968",
+        "token0Price": "0.007514941925038057276876989276092712",
+        "token1Price": "133.0682272697584134199765847562299",
+        "feeTier": "10000",
+        "token0": {
+          "id": "0x903bef1736cddf2a537176cf3c64579c3867a881",
+          "symbol": "ICHI",
+          "name": "ichi.farm",
+          "decimals": "9"
+        },
+        "token1": {
+          "id": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "symbol": "USDC",
+          "name": "USD Coin",
+          "decimals": "6"
+        }
+      }
+
+    ]
+  }
+}

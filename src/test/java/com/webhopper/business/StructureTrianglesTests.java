@@ -1,11 +1,12 @@
 package com.webhopper.business;
 
-import com.webhopper.business.StructureTriangles;
+import com.webhopper.entities.CryptoExchange;
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
 import com.webhopper.poloniex.PoloniexApi;
 import com.webhopper.poloniex.PolonixService;
 import com.webhopper.uniswap.UniswapApi;
+import com.webhopper.uniswap.UniswapService;
 import com.webhopper.utils.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +22,8 @@ import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
@@ -33,20 +35,24 @@ public class StructureTrianglesTests {
     private UniswapApi uniswapApi;
 
     private PolonixService polonixService;
+    private UniswapService uniswapService;
+    private ExchangeMarketDataService exchangeMarketDataService;
 
     private StructureTriangles structureTriangles;
 
     @Before
     public void setup() throws IOException {
         polonixService = new PolonixService(poloniexApi);
-        structureTriangles = new StructureTriangles(polonixService);
+        uniswapService = new UniswapService(uniswapApi);
+        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, uniswapService);
+        structureTriangles = new StructureTriangles(exchangeMarketDataService);
     }
 
     @Test
     public void testCorrectTrianglesFound() throws IOException {
-        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "tickers_for_3_triangles.json");
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__tickers_for_3_triangles.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
-        List<Triangle> triangles = structureTriangles.structure();
+        List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
 
         assertEquals(3, triangles.size());
 
@@ -60,9 +66,9 @@ public class StructureTrianglesTests {
 
     @Test
     public void testCorrectUniswapTrianglesFound() throws IOException {
-        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "uniwswap_tickers.json");
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "uniswap__tickers_for_3_triangles.json");
         when(uniswapApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
-        List<Triangle> triangles = structureTriangles.structure();
+        List<Triangle> triangles = structureTriangles.structure(CryptoExchange.UNISWAP);
 
         assertEquals(3, triangles.size());
 

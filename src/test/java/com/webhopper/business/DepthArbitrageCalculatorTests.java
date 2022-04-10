@@ -1,9 +1,6 @@
 package com.webhopper.business;
 
-import com.webhopper.entities.DepthCalcState;
-import com.webhopper.entities.TriArbTrade;
-import com.webhopper.entities.TriArbTradeLeg;
-import com.webhopper.entities.Triangle;
+import com.webhopper.entities.*;
 import com.webhopper.poloniex.PoloniexQuote;
 import com.webhopper.poloniex.PoloniexApi;
 import com.webhopper.poloniex.PolonixService;
@@ -31,6 +28,8 @@ public class DepthArbitrageCalculatorTests {
 
     private PolonixService polonixService;
 
+    private ExchangeMarketDataService exchangeMarketDataService;
+
     private StructureTriangles structureTriangles;
 
     private DepthArbitrageCalculator depthArbitrageCalculator;
@@ -38,7 +37,9 @@ public class DepthArbitrageCalculatorTests {
     @Before
     public void setup() throws IOException {
         polonixService = new PolonixService(poloniexApi);
-        structureTriangles = new StructureTriangles(polonixService);
+        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, null);
+
+        structureTriangles = new StructureTriangles(exchangeMarketDataService);
         depthArbitrageCalculator = new DepthArbitrageCalculator(polonixService);
     }
 
@@ -47,10 +48,10 @@ public class DepthArbitrageCalculatorTests {
         // 1: Create triangle.
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "ticker_for_1_unprofitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
-        List<Triangle> triangles = structureTriangles.structure();
+        List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
         final Triangle triangle = triangles.get(0);
 
-        final Map<String, PoloniexQuote> quotes = polonixService.getPricingInfo();
+        final Map<String, Quote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);

@@ -17,7 +17,7 @@ public class PolonixService {
         this.poloniexApi = poloniexApi;
     }
 
-    public Map<String, PoloniexQuote> getPricingInfo() {
+    public Map<String, Quote> getPricingInfo() {
         final String json = poloniexApi.getPricesFromFileOrApiCall(false);
         return mapPoloniexJsonToPairQuotes(json);
     }
@@ -41,7 +41,7 @@ public class PolonixService {
         return orderBook;
     }
 
-    private static Map<String, PoloniexQuote> mapPoloniexJsonToPairQuotes(String prices) {
+    private static Map<String, Quote> mapPoloniexJsonToPairQuotes(String prices) {
 
         ObjectMapper objectMapper = JsonFacade.getObjectMapper();
         JsonNode priceData = null;
@@ -51,7 +51,7 @@ public class PolonixService {
             e.printStackTrace();
         }
 
-        Map<String, PoloniexQuote> pairQuotes = new HashMap<>();
+        Map<String, Quote> pairQuotes = new HashMap<>();
 
         final Iterator<String> pairNames = priceData.fieldNames();
 
