@@ -168,9 +168,9 @@ public class SurfaceArbitrageCalculatorTests {
 
         if(quote.getCryptoExchange() == CryptoExchange.UNISWAP) {
             if (leg.getPairTradeDirection() == BASE_TO_QUOTE) {
-                return ((UniswapQuote)quote).getBasePrice();
+                return ((UniswapQuote)quote).getToken1Price();
             } else if (leg.getPairTradeDirection() == QUOTE_TO_BASE) {
-                return ((UniswapQuote)quote).getQuotePrice();
+                return ((UniswapQuote)quote).getToken0Price();
             }
         }
 

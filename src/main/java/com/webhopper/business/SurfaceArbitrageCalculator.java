@@ -169,7 +169,7 @@ public class SurfaceArbitrageCalculator {
         if(quote.getCryptoExchange() == CryptoExchange.POLONIEX) {
             return ((PoloniexQuote) quote).getBid();
         } else if(quote.getCryptoExchange() == CryptoExchange.UNISWAP) {
-            return ((UniswapQuote) quote).getQuotePrice();
+            return ((UniswapQuote) quote).getToken0Price();
         }
 
         return null;
@@ -179,7 +179,7 @@ public class SurfaceArbitrageCalculator {
         if(quote.getCryptoExchange() == CryptoExchange.POLONIEX) {
             return new BigDecimal(1.0).divide(((PoloniexQuote) quote).getAsk(), 7, RoundingMode.HALF_UP);
         } else if(quote.getCryptoExchange() == CryptoExchange.UNISWAP) {
-            return ((UniswapQuote) quote).getBasePrice();
+            return ((UniswapQuote) quote).getToken1Price();
         }
 
         return null;

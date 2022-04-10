@@ -53,7 +53,13 @@ public class UniswapService {
             double token0Price = poolEntry.get("token0Price").asDouble();
             double token1Price = poolEntry.get("token1Price").asDouble();
 
-            pairQuotes.put(pair, new UniswapQuote(pair, base, quote, new BigDecimal(token1Price), new BigDecimal(token0Price)));
+            final UniswapQuote uniswapQuote = new UniswapQuote(pair, base, quote, new BigDecimal(token1Price), new BigDecimal(token0Price));
+            uniswapQuote.setQuoteContract(poolEntry.get("id").textValue());
+            uniswapQuote.setToken0Contract(poolEntry.get("token0").get("id").textValue());
+            uniswapQuote.setToken1Contract(poolEntry.get("token1").get("id").textValue());
+            uniswapQuote.setToken0Decimals( poolEntry.get("token0").get("decimals").asInt());
+            uniswapQuote.setToken1Decimals(poolEntry.get("token1").get("decimals").asInt());
+            pairQuotes.put(pair, uniswapQuote);
         }
 
         return pairQuotes;
