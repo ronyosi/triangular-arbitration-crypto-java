@@ -3,6 +3,8 @@ package com.webhopper.business;
 import com.webhopper.entities.*;
 import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.integrations.poloniex.*;
+import com.webhopper.integrations.uniswap.UniswapApi;
+import com.webhopper.integrations.uniswap.UniswapService;
 import com.webhopper.utils.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,9 +27,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class SurfaceArbitrageCalculatorTests {
     @Mock
+    private UniswapApi uniswapApi;
+    @Mock
     private PoloniexApi poloniexApi;
 
     private PolonixService polonixService;
+    private UniswapService uniswapService;
     private ExchangeMarketDataService exchangeMarketDataService;
 
     private StructureTriangles structureTriangles;
@@ -35,7 +40,8 @@ public class SurfaceArbitrageCalculatorTests {
     @Before
     public void setup() throws IOException {
         polonixService = new PolonixService(poloniexApi);
-        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, null);
+        uniswapService = new UniswapService(uniswapApi);
+        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, uniswapService);
         structureTriangles = new StructureTriangles(exchangeMarketDataService);
     }
 
@@ -83,10 +89,10 @@ public class SurfaceArbitrageCalculatorTests {
     public void testUniswapProfitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
         // 1: Create triangles.
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "uniswap__ticker_for_1_profitable_triangle.json");
-        when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
+        when(uniswapApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure(CryptoExchange.UNISWAP);
 
-        final Map<String, Quote> quotes = polonixService.getPricingInfo();
+        final Map<String, Quote> quotes = uniswapService.getPricingInfo();
 
         // 2: Calculate surface rate
         final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(exchangeMarketDataService);
@@ -95,8 +101,8 @@ public class SurfaceArbitrageCalculatorTests {
         TriArbTrade fullTriArbTradeForward = candidates.get(0);
         TriArbTrade fullTriArbTradeReverse = candidates.get(1);
 
-        verifyCalculations(quotes, fullTriArbTradeForward, BASE_TO_QUOTE, QUOTE_TO_BASE, BASE_TO_QUOTE);
-        verifyCalculations(quotes, fullTriArbTradeReverse, QUOTE_TO_BASE, QUOTE_TO_BASE, BASE_TO_QUOTE);
+        verifyCalculations(quotes, fullTriArbTradeForward, BASE_TO_QUOTE, BASE_TO_QUOTE, QUOTE_TO_BASE);
+        verifyCalculations(quotes, fullTriArbTradeReverse, QUOTE_TO_BASE, BASE_TO_QUOTE, QUOTE_TO_BASE);
     }
 
     private void verifyCoinsInAndOutOfLegsAReCompatible(TriArbTradeLeg leg1, TriArbTradeLeg leg2, TriArbTradeLeg leg3) {
@@ -152,12 +158,22 @@ public class SurfaceArbitrageCalculatorTests {
     private BigDecimal calculateExpectedSwapRate(final TriArbTradeLeg leg, final Map<String, Quote> quotes) {
         final Quote quote = quotes.get(leg.getPair().getPair());
 
-        if(leg.getPairTradeDirection() == BASE_TO_QUOTE) {
-            return new BigDecimal(1).divide(((PoloniexQuote)quote).getAsk(), 7, RoundingMode.HALF_UP);
-        } else if(leg.getPairTradeDirection() == QUOTE_TO_BASE) {
-            return ((PoloniexQuote)quote).getBid();
-        } else {
-            return null;
+        if(quote.getCryptoExchange() == CryptoExchange.POLONIEX) {
+            if (leg.getPairTradeDirection() == BASE_TO_QUOTE) {
+                return new BigDecimal(1).divide(((PoloniexQuote) quote).getAsk(), 7, RoundingMode.HALF_UP);
+            } else if (leg.getPairTradeDirection() == QUOTE_TO_BASE) {
+                return ((PoloniexQuote) quote).getBid();
+            }
         }
+
+        if(quote.getCryptoExchange() == CryptoExchange.UNISWAP) {
+            if (leg.getPairTradeDirection() == BASE_TO_QUOTE) {
+                return ((UniswapQuote)quote).getBasePrice();
+            } else if (leg.getPairTradeDirection() == QUOTE_TO_BASE) {
+                return ((UniswapQuote)quote).getQuotePrice();
+            }
+        }
+
+        return null;
     }
 }
