@@ -27,13 +27,13 @@ public class TriangularArbitrationApp {
     private static final Logger logger = LoggerFactory.getLogger(TriangularArbitrationApp.class);
 
     private final StructureTriangles structureTriangles;
-    private final PolonixService polonixService;
+    private final ExchangeMarketDataService exchangeMarketDataService;
 
     public TriangularArbitrationApp(
             final StructureTriangles structureTriangles,
-            final PolonixService polonixService) {
+            final ExchangeMarketDataService exchangeMarketDataService) {
         this.structureTriangles = structureTriangles;
-        this.polonixService = polonixService;
+        this.exchangeMarketDataService = exchangeMarketDataService;
     }
 
     public List<Triangle> structureTriangles() {
@@ -50,7 +50,7 @@ public class TriangularArbitrationApp {
         PolonixService polonixService = new PolonixService(poloniexApi);
         ExchangeMarketDataService exchangeMarketDataService = new ExchangeMarketDataService(polonixService, null);
         StructureTriangles structureTriangles = new StructureTriangles(exchangeMarketDataService);
-        TriangularArbitrationApp arbitrationApp = new TriangularArbitrationApp(structureTriangles, polonixService);
+        TriangularArbitrationApp arbitrationApp = new TriangularArbitrationApp(structureTriangles, exchangeMarketDataService);
         List<Triangle> triangles = arbitrationApp.structureTriangles();
         arbitrationApp.findArbitrageFromTriangles(triangles);
     }
@@ -58,9 +58,9 @@ public class TriangularArbitrationApp {
     private void findArbitrageFromTriangles(List<Triangle> triangles) {
         final double percentProfitExpected = 0;
 
-        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
-        final DepthArbitrageCalculator realArbitrageCalculator = new DepthArbitrageCalculator(polonixService);
-        final Map<String, Quote> quotes = polonixService.getPricingInfo();
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(exchangeMarketDataService);
+        final DepthArbitrageCalculator realArbitrageCalculator = new DepthArbitrageCalculator(exchangeMarketDataService);
+        final Map<String, Quote> quotes = exchangeMarketDataService.getPricingInfo(CryptoExchange.POLONIEX);
         List<TriArbTrade> profitableTrianglesByRealRate = new ArrayList<>();
         List<TriArbTrade> profitableTrianglesBySurfaceRate = new ArrayList<>();
 

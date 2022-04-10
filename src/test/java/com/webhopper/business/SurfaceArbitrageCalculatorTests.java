@@ -39,7 +39,7 @@ public class SurfaceArbitrageCalculatorTests {
     }
 
     @Test
-    public void testProfitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
+    public void testPoloniexProfitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
         // 1: Create triangles.
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__ticker_for_1_profitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
@@ -48,7 +48,7 @@ public class SurfaceArbitrageCalculatorTests {
         final Map<String, Quote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
-        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(exchangeMarketDataService);
         final List<TriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
         Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
         TriArbTrade fullTriArbTradeForward = candidates.get(0);
@@ -59,16 +59,36 @@ public class SurfaceArbitrageCalculatorTests {
     }
 
     @Test
-    public void testUnprofitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
+    public void testPoloniexUnprofitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
         // 1: Create triangles.
         final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "poloniex__ticker_for_1_unprofitable_triangle.json");
         when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
         List<Triangle> triangles = structureTriangles.structure(CryptoExchange.POLONIEX);
 
+        final Map<String, Quote> quotes = exchangeMarketDataService.getPricingInfo(CryptoExchange.POLONIEX);
+
+        // 2: Calculate surface rate
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(exchangeMarketDataService);
+        final List<TriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
+        Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
+        TriArbTrade fullTriArbTradeForward = candidates.get(0);
+        TriArbTrade fullTriArbTradeReverse = candidates.get(1);
+
+        verifyCalculations(quotes, fullTriArbTradeForward, BASE_TO_QUOTE, QUOTE_TO_BASE, BASE_TO_QUOTE);
+        verifyCalculations(quotes, fullTriArbTradeReverse, QUOTE_TO_BASE, QUOTE_TO_BASE, BASE_TO_QUOTE);
+    }
+
+    @Test
+    public void testUniswapProfitableSurfaceArbitrageCalculatedCorrectly() throws IOException {
+        // 1: Create triangles.
+        final String json = FileUtils.fileInResourceFolderToString(this.getClass().getClassLoader(), "uniswap__ticker_for_1_profitable_triangle.json");
+        when(poloniexApi.getPricesFromFileOrApiCall(anyBoolean())).thenReturn(json);
+        List<Triangle> triangles = structureTriangles.structure(CryptoExchange.UNISWAP);
+
         final Map<String, Quote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
-        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(exchangeMarketDataService);
         final List<TriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
         Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
         TriArbTrade fullTriArbTradeForward = candidates.get(0);

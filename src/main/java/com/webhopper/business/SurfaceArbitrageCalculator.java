@@ -2,7 +2,6 @@ package com.webhopper.business;
 
 import com.webhopper.entities.*;
 import com.webhopper.integrations.poloniex.PoloniexQuote;
-import com.webhopper.integrations.poloniex.PolonixService;
 import com.webhopper.integrations.poloniex.Quote;
 import com.webhopper.integrations.poloniex.UniswapQuote;
 import org.slf4j.Logger;
@@ -17,10 +16,10 @@ import java.util.Map;
 public class SurfaceArbitrageCalculator {
     private static final Logger logger = LoggerFactory.getLogger(SurfaceArbitrageCalculator.class);
 
-    private PolonixService poloniexService;
+    private ExchangeMarketDataService exchangeMarketDataService;
 
-    public SurfaceArbitrageCalculator(PolonixService poloniexService) {
-        this.poloniexService = poloniexService;
+    public SurfaceArbitrageCalculator(ExchangeMarketDataService exchangeMarketDataService) {
+        this.exchangeMarketDataService = exchangeMarketDataService;
 
     }
 

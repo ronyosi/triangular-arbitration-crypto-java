@@ -15,10 +15,10 @@ import java.util.List;
 public class DepthArbitrageCalculator {
     private static final Logger logger = LoggerFactory.getLogger(DepthArbitrageCalculator.class);
 
-    private PolonixService poloniexService;
+    private final ExchangeMarketDataService exchangeMarketDataService;
 
-    public DepthArbitrageCalculator(PolonixService poloniexService) {
-        this.poloniexService = poloniexService;
+    public DepthArbitrageCalculator(final ExchangeMarketDataService exchangeMarketDataService) {
+        this.exchangeMarketDataService = exchangeMarketDataService;
 
     }
 
@@ -30,9 +30,9 @@ public class DepthArbitrageCalculator {
         final TriArbTradeLeg leg3 = triArbTrade.getLeg3();
         final String leg3Pair = leg3.getPair().getPair();
 
-        final OrderBook bookForleg1Pair = poloniexService.getBookForPair(leg1Pair);
-        final OrderBook bookForLeg2Pair = poloniexService.getBookForPair(leg2Pair);
-        final OrderBook bookForLeg3Pair = poloniexService.getBookForPair(leg3Pair);
+        final OrderBook bookForleg1Pair = exchangeMarketDataService.getBookForPair(leg1Pair);
+        final OrderBook bookForLeg2Pair = exchangeMarketDataService.getBookForPair(leg2Pair);
+        final OrderBook bookForLeg3Pair = exchangeMarketDataService.getBookForPair(leg3Pair);
 
         //todo: write tests on the book repricing algo for sanity check.
         final List<BookEntry> repriceForLeg1Calculation = reformatOrderbook(bookForleg1Pair, leg1.getPairTradeDirection());

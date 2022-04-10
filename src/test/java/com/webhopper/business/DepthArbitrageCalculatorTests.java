@@ -4,6 +4,9 @@ import com.webhopper.entities.*;
 import com.webhopper.integrations.poloniex.PoloniexApi;
 import com.webhopper.integrations.poloniex.PolonixService;
 import com.webhopper.integrations.poloniex.Quote;
+import com.webhopper.integrations.poloniex.UniswapQuote;
+import com.webhopper.integrations.uniswap.UniswapApi;
+import com.webhopper.integrations.uniswap.UniswapService;
 import com.webhopper.utils.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,7 +28,12 @@ public class DepthArbitrageCalculatorTests {
     @Mock
     private PoloniexApi poloniexApi;
 
+    @Mock
+    private UniswapApi uniswapApi;
+
     private PolonixService polonixService;
+
+    private UniswapService uniswapService;
 
     private ExchangeMarketDataService exchangeMarketDataService;
 
@@ -36,10 +44,11 @@ public class DepthArbitrageCalculatorTests {
     @Before
     public void setup() throws IOException {
         polonixService = new PolonixService(poloniexApi);
-        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, null);
+        uniswapService = new UniswapService(uniswapApi);
+        exchangeMarketDataService = new ExchangeMarketDataService(polonixService, uniswapService);
 
         structureTriangles = new StructureTriangles(exchangeMarketDataService);
-        depthArbitrageCalculator = new DepthArbitrageCalculator(polonixService);
+        depthArbitrageCalculator = new DepthArbitrageCalculator(exchangeMarketDataService);
     }
 
     @Test
@@ -53,7 +62,7 @@ public class DepthArbitrageCalculatorTests {
         final Map<String, Quote> quotes = polonixService.getPricingInfo();
 
         // 2: Calculate surface rate
-        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(polonixService);
+        final SurfaceArbitrageCalculator arbitrageCalculator = new SurfaceArbitrageCalculator(exchangeMarketDataService);
         final List<TriArbTrade> candidates = arbitrageCalculator.calculateSurfaceArbitrage(triangles.get(0), quotes, new BigDecimal(500));
         Assert.assertEquals(2, candidates.size());// There should be only one triangle in that file loaded above.
         TriArbTrade fullTriArbTradeForward = candidates.get(0);
