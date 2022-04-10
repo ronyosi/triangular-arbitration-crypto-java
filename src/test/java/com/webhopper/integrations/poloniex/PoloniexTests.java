@@ -1,7 +1,7 @@
 package com.webhopper.integrations.poloniex;
 
 
-import com.webhopper.business.ExchangeMarketDataService;
+import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.business.StructureTriangles;
 import com.webhopper.integrations.uniswap.UniswapApi;
 import com.webhopper.integrations.uniswap.UniswapService;

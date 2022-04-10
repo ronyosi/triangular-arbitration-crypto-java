@@ -1,10 +1,10 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.*;
+import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.integrations.poloniex.PoloniexApi;
 import com.webhopper.integrations.poloniex.PolonixService;
 import com.webhopper.integrations.poloniex.Quote;
-import com.webhopper.integrations.poloniex.UniswapQuote;
 import com.webhopper.integrations.uniswap.UniswapApi;
 import com.webhopper.integrations.uniswap.UniswapService;
 import com.webhopper.utils.FileUtils;

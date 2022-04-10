@@ -3,6 +3,7 @@ package com.webhopper.business;
 import com.webhopper.entities.CryptoExchange;
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
+import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.integrations.poloniex.PoloniexApi;
 import com.webhopper.integrations.poloniex.PolonixService;
 import com.webhopper.integrations.uniswap.UniswapApi;

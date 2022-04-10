@@ -1,4 +1,4 @@
-package com.webhopper.business;
+package com.webhopper.integrations;
 
 import com.webhopper.entities.CryptoExchange;
 import com.webhopper.integrations.poloniex.OrderBook;

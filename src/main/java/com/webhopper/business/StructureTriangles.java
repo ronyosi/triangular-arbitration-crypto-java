@@ -3,6 +3,7 @@ package com.webhopper.business;
 import com.webhopper.entities.CryptoExchange;
 import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
+import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.integrations.poloniex.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

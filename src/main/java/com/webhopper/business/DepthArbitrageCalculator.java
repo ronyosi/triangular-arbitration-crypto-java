@@ -1,9 +1,9 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.*;
+import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.integrations.poloniex.BookEntry;
 import com.webhopper.integrations.poloniex.OrderBook;
-import com.webhopper.integrations.poloniex.PolonixService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

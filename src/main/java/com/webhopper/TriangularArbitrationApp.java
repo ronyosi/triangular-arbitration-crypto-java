@@ -2,7 +2,7 @@ package com.webhopper;
 
 import com.google.common.base.Stopwatch;
 import com.webhopper.business.DepthArbitrageCalculator;
-import com.webhopper.business.ExchangeMarketDataService;
+import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.business.SurfaceArbitrageCalculator;
 import com.webhopper.business.StructureTriangles;
 import com.webhopper.entities.CryptoExchange;

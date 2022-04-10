@@ -1,6 +1,7 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.*;
+import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.integrations.poloniex.PoloniexQuote;
 import com.webhopper.integrations.poloniex.Quote;
 import com.webhopper.integrations.poloniex.UniswapQuote;
