@@ -1,4 +1,4 @@
-package com.webhopper.poloniex;
+package com.webhopper.integrations.poloniex;
 
 import java.math.BigDecimal;
 

@@ -1,10 +1,10 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.CryptoExchange;
-import com.webhopper.poloniex.OrderBook;
-import com.webhopper.poloniex.PolonixService;
-import com.webhopper.poloniex.Quote;
-import com.webhopper.uniswap.UniswapService;
+import com.webhopper.integrations.poloniex.OrderBook;
+import com.webhopper.integrations.poloniex.PolonixService;
+import com.webhopper.integrations.poloniex.Quote;
+import com.webhopper.integrations.uniswap.UniswapService;
 
 import java.util.Map;
 

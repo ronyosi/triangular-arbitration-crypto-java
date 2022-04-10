@@ -1,11 +1,10 @@
-package com.webhopper.uniswap;
+package com.webhopper.integrations.uniswap;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.webhopper.poloniex.PoloniexQuote;
-import com.webhopper.poloniex.Quote;
-import com.webhopper.poloniex.UniswapQuote;
+import com.webhopper.integrations.poloniex.Quote;
+import com.webhopper.integrations.poloniex.UniswapQuote;
 import com.webhopper.utils.JsonFacade;
 
 import java.math.BigDecimal;

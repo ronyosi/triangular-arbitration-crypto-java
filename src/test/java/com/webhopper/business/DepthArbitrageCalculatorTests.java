@@ -1,10 +1,9 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.*;
-import com.webhopper.poloniex.PoloniexQuote;
-import com.webhopper.poloniex.PoloniexApi;
-import com.webhopper.poloniex.PolonixService;
-import com.webhopper.poloniex.Quote;
+import com.webhopper.integrations.poloniex.PoloniexApi;
+import com.webhopper.integrations.poloniex.PolonixService;
+import com.webhopper.integrations.poloniex.Quote;
 import com.webhopper.utils.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;

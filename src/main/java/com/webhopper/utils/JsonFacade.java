@@ -2,8 +2,8 @@ package com.webhopper.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.webhopper.poloniex.OrderBook;
-import com.webhopper.poloniex.OrderBookDeserializer;
+import com.webhopper.integrations.poloniex.OrderBook;
+import com.webhopper.integrations.poloniex.OrderBookDeserializer;
 
 public class JsonFacade {
     private static ObjectMapper objectMapper;

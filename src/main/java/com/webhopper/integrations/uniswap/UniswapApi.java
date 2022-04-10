@@ -1,18 +1,14 @@
-package com.webhopper.uniswap;
+package com.webhopper.integrations.uniswap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webhopper.utils.FileUtils;
 import com.webhopper.utils.JsonFacade;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 

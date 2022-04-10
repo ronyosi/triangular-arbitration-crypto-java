@@ -9,10 +9,9 @@ import com.webhopper.entities.CryptoExchange;
 import com.webhopper.entities.DepthCalcState;
 import com.webhopper.entities.TriArbTrade;
 import com.webhopper.entities.Triangle;
-import com.webhopper.poloniex.PoloniexQuote;
-import com.webhopper.poloniex.PoloniexApi;
-import com.webhopper.poloniex.PolonixService;
-import com.webhopper.poloniex.Quote;
+import com.webhopper.integrations.poloniex.PoloniexApi;
+import com.webhopper.integrations.poloniex.PolonixService;
+import com.webhopper.integrations.poloniex.Quote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

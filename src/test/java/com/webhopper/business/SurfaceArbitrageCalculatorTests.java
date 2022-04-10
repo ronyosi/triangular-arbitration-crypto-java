@@ -1,7 +1,7 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.*;
-import com.webhopper.poloniex.*;
+import com.webhopper.integrations.poloniex.*;
 import com.webhopper.utils.FileUtils;
 import org.junit.Assert;
 import org.junit.Before;

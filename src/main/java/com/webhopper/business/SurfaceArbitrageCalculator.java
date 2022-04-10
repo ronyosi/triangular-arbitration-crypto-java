@@ -1,10 +1,10 @@
 package com.webhopper.business;
 
 import com.webhopper.entities.*;
-import com.webhopper.poloniex.PoloniexQuote;
-import com.webhopper.poloniex.PolonixService;
-import com.webhopper.poloniex.Quote;
-import com.webhopper.poloniex.UniswapQuote;
+import com.webhopper.integrations.poloniex.PoloniexQuote;
+import com.webhopper.integrations.poloniex.PolonixService;
+import com.webhopper.integrations.poloniex.Quote;
+import com.webhopper.integrations.poloniex.UniswapQuote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

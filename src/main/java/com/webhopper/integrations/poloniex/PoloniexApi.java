@@ -1,9 +1,6 @@
-package com.webhopper.poloniex;
+package com.webhopper.integrations.poloniex;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.webhopper.utils.FileUtils;
-import com.webhopper.utils.JsonFacade;
 
 import java.io.IOException;
 import java.net.URI;
