@@ -92,12 +92,12 @@ public class StructureTrianglesTests {
         final Map<String, Integer> countPerCoin = new HashMap<>();
 
         List<String> coins = new ArrayList<>();
-        coins.add(triangle.getBaseA());
-        coins.add(triangle.getBaseB());
-        coins.add(triangle.getBaseC());
-        coins.add(triangle.getQuoteA());
-        coins.add(triangle.getQuoteB());
-        coins.add(triangle.getQuoteC());
+        coins.add(triangle.getPairA().getBase());
+        coins.add(triangle.getPairB().getBase());
+        coins.add(triangle.getPairC().getBase());
+        coins.add(triangle.getPairA().getQuote());
+        coins.add(triangle.getPairB().getQuote());
+        coins.add(triangle.getPairC().getQuote());
 
         for(String coin : coins) {
             Integer countForSingleCoin = countPerCoin.get(coin);
@@ -125,15 +125,15 @@ public class StructureTrianglesTests {
     }
 
     private void verifyTradingPathPossible(Triangle triangle) {
-        final Pair pairA = triangle.getA();
+        final Pair pairA = triangle.getPairA();
         String baseA = pairA.getBase();
         String quoteA = pairA.getQuote();
 
-        final Pair pairB = triangle.getB();
+        final Pair pairB = triangle.getPairB();
         String baseB = pairB.getBase();
         String quoteB = pairB.getQuote();
 
-        final Pair pairC = triangle.getC();
+        final Pair pairC = triangle.getPairC();
         String baseC = pairC.getBase();
         String quoteC = pairC.getQuote();
 
@@ -197,21 +197,21 @@ public class StructureTrianglesTests {
     private void checkThatNoDuplicateTrianglesCreated(final List<Triangle> triangles) {
         List<String> pairsInTriangle1 = new ArrayList<>();
         Triangle triangle1 = triangles.get(0);
-        pairsInTriangle1.add(triangle1.getA().getPair());
-        pairsInTriangle1.add(triangle1.getB().getPair());
-        pairsInTriangle1.add(triangle1.getC().getPair());
+        pairsInTriangle1.add(triangle1.getPairA().getPair());
+        pairsInTriangle1.add(triangle1.getPairB().getPair());
+        pairsInTriangle1.add(triangle1.getPairC().getPair());
 
         List<String> pairsInTriangle2 = new ArrayList<>();
         Triangle triangle2 = triangles.get(1);
-        pairsInTriangle2.add(triangle2.getA().getPair());
-        pairsInTriangle2.add(triangle2.getB().getPair());
-        pairsInTriangle2.add(triangle2.getC().getPair());
+        pairsInTriangle2.add(triangle2.getPairA().getPair());
+        pairsInTriangle2.add(triangle2.getPairB().getPair());
+        pairsInTriangle2.add(triangle2.getPairC().getPair());
 
         List<String> pairsInTriangle3 = new ArrayList<>();
         Triangle triangle3 = triangles.get(2);
-        pairsInTriangle3.add(triangle3.getA().getPair());
-        pairsInTriangle3.add(triangle3.getB().getPair());
-        pairsInTriangle3.add(triangle3.getC().getPair());
+        pairsInTriangle3.add(triangle3.getPairA().getPair());
+        pairsInTriangle3.add(triangle3.getPairB().getPair());
+        pairsInTriangle3.add(triangle3.getPairC().getPair());
 
         assertThat(pairsInTriangle1, not(containsInAnyOrder(pairsInTriangle2.toArray())));
         assertThat(pairsInTriangle1, not(containsInAnyOrder(pairsInTriangle2.toArray())));

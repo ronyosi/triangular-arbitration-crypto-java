@@ -68,14 +68,14 @@ public class DepthArbitrageCalculatorTests {
         TriArbTrade fullTriArbTradeForward = candidates.get(0);
         TriArbTrade fullTriArbTradeReverse = candidates.get(1);
 
-        mockOrderBookCallForPair(triangle.getA().getPair());
-        mockOrderBookCallForPair(triangle.getB().getPair());
-        mockOrderBookCallForPair(triangle.getC().getPair());
+        mockOrderBookCallForPair(triangle.getPairA().getPair());
+        mockOrderBookCallForPair(triangle.getPairB().getPair());
+        mockOrderBookCallForPair(triangle.getPairC().getPair());
 
-        TriArbTrade triArbTradeForward = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeForward);
+        TriArbTrade triArbTradeForward = depthArbitrageCalculator.calculateCefiDepthArbitrage(fullTriArbTradeForward);
         Assert.assertEquals(DepthCalcState.NOT_ENOUGH_BOOK_DEPTH, triArbTradeForward.getDepthCalcState());
 
-        TriArbTrade triArbTradeReverse = depthArbitrageCalculator.calculateDepthArbitrage(fullTriArbTradeReverse);
+        TriArbTrade triArbTradeReverse = depthArbitrageCalculator.calculateCefiDepthArbitrage(fullTriArbTradeReverse);
         Assert.assertEquals(DepthCalcState.SUCCESSFULLY_CALCULATED, triArbTradeReverse.getDepthCalcState());
 
         TriArbTradeLeg leg1 = triArbTradeReverse.getLeg1();

@@ -29,9 +29,9 @@ public class SurfaceArbitrageCalculator {
             final Map<String, Quote> quotes,
             final BigDecimal startingAmount) {
         // a is always the first pair whether we go in forward or reverse.
-        final Pair pairA = triangle.getA();
-        final Pair pairB = triangle.getB();
-        final Pair pairC = triangle.getC();
+        final Pair pairA = triangle.getPairA();
+        final Pair pairB = triangle.getPairB();
+        final Pair pairC = triangle.getPairC();
 
         final Quote pairAPricing = quotes.get(pairA.getPair());
 
@@ -113,16 +113,16 @@ public class SurfaceArbitrageCalculator {
             final BigDecimal amount,
             final List<TriArbTradeLeg> triArbTrades) {
 
-        final TriArbTradeLeg tradeA = triArbTrades.get(0);
-        final TriArbTradeLeg tradeB = triArbTrades.get(1);
-        final TriArbTradeLeg endTrade = triArbTrades.get(2);
-        final BigDecimal profit = endTrade.getSurfaceCalcAmountOut().subtract(amount);
+        final TriArbTradeLeg leg1 = triArbTrades.get(0);
+        final TriArbTradeLeg leg2 = triArbTrades.get(1);
+        final TriArbTradeLeg leg3 = triArbTrades.get(2);
+        final BigDecimal profit = leg3.getSurfaceCalcAmountOut().subtract(amount);
 
         // Calculate profit %
         final BigDecimal divide = profit.divide(amount, 7, RoundingMode.HALF_UP);
         final BigDecimal profitPercentage = divide.multiply(new BigDecimal(100));
 
-        return new TriArbTrade(tradeA, tradeB, endTrade, profit, profitPercentage);
+        return new TriArbTrade(leg1, leg2, leg3, profit, profitPercentage);
     }
 
     public static void logSurfaceRateInfo(TriArbTrade fullTriArbTrade) {

@@ -5,6 +5,7 @@ import com.webhopper.entities.Pair;
 import com.webhopper.entities.Triangle;
 import com.webhopper.integrations.ExchangeMarketDataService;
 import com.webhopper.integrations.poloniex.Quote;
+import com.webhopper.integrations.poloniex.UniswapQuote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,20 +61,20 @@ public class StructureTriangles {
                         trianglesAlreadyFound.add(uniqueItem);
 
                         Triangle triangle = new Triangle();
-                        triangle.setBaseA(baseA);
-                        triangle.setBaseB(baseB);
-                        triangle.setBaseC(baseC);
-                        triangle.setQuoteA(quoteA);
-                        triangle.setQuoteB(quoteB);
-                        triangle.setQuoteC(quoteC);
+//                        triangle.setBaseA(baseA);
+//                        triangle.setBaseB(baseB);
+//                        triangle.setBaseC(baseC);
+//                        triangle.setQuoteA(quoteA);
+//                        triangle.setQuoteB(quoteB);
+//                        triangle.setQuoteC(quoteC);
                         // todo:comment these 3 out?
-                        triangle.setPairA(pairA.getPair());
-                        triangle.setPairB(pairB.getPair());
-                        triangle.setPairC(pairC.getPair());
+//                        triangle.setPairA(pairA.getPair());
+//                        triangle.setPairB(pairB.getPair());
+//                        triangle.setPairC(pairC.getPair());
                         triangle.setCombined(pairA.getPair() + "," + pairB.getPair() + "," + pairC.getPair());
-                        triangle.setA(new Pair(baseA, quoteA, pairA.getPair()));
-                        triangle.setB(new Pair(baseB, quoteB, pairB.getPair()));
-                        triangle.setC(new Pair(baseC, quoteC, pairC.getPair()));
+                        triangle.setPairA(new Pair(baseA, quoteA, pairA.getPair(), getContractId(pairA)));
+                        triangle.setPairB(new Pair(baseB, quoteB, pairB.getPair(), getContractId(pairB)));
+                        triangle.setPairC(new Pair(baseC, quoteC, pairC.getPair(), getContractId(pairC)));
                         result.add(triangle);
                     }
                 }
@@ -81,6 +82,13 @@ public class StructureTriangles {
         }
 
         return result;
+    }
+
+    private String getContractId(Quote quote) {
+        if(quote.getCryptoExchange() == CryptoExchange.UNISWAP) {
+            return ((UniswapQuote)quote).getQuoteContract();
+        }
+        return null;
     }
 
 

@@ -4,11 +4,13 @@ public class Pair {
     String base;
     String quote;
     String pair;
+    String contractId;
 
-    public Pair(String base, String quote, String pair) {
+    public Pair(String base, String quote, String pair, String contractId) {
         this.base = base;
         this.quote = quote;
         this.pair = pair;
+        this.contractId = contractId;
     }
 
     public String getBase() {

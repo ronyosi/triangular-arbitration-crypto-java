@@ -21,8 +21,12 @@ public class DepthArbitrageCalculator {
         this.exchangeMarketDataService = exchangeMarketDataService;
 
     }
+    public TriArbTrade calculateUniswapDepthArbitrage(final TriArbTrade triArbTrade) {
 
-    public TriArbTrade calculateDepthArbitrage(final TriArbTrade triArbTrade) {
+        return null;
+    }
+
+    public TriArbTrade calculateCefiDepthArbitrage(final TriArbTrade triArbTrade) {
         final TriArbTradeLeg leg1 = triArbTrade.getLeg1();
         final String leg1Pair = leg1.getPair().getPair();
         final TriArbTradeLeg leg2 = triArbTrade.getLeg2();

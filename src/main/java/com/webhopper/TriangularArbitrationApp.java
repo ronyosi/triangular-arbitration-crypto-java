@@ -72,7 +72,7 @@ public class TriangularArbitrationApp {
 
             for(TriArbTrade candidate : candidates) {
                 logSurfaceRateInfo(candidate);
-                TriArbTrade triArbTrade = realArbitrageCalculator.calculateDepthArbitrage(candidate);
+                TriArbTrade triArbTrade = realArbitrageCalculator.calculateCefiDepthArbitrage(candidate);
                logger.info(triArbTrade.prettyPrintTradeSummary());
 
                 if(triArbTrade.getDepthCalcState() == DepthCalcState.SUCCESSFULLY_CALCULATED
